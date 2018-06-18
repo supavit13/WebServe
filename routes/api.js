@@ -15,22 +15,19 @@ client.on('connect', function () {
     client.subscribe('node2');
 });
 var massage = new Array(); 
-function pushback(json){
-    massage[no].push(json);
-}
+
+
 client.on('message',function(topic,msg){
     var no = parseInt(topic.split('e')[1]);
+    massage[no] = [];
     var json = JSON.parse(msg.toString());
     for(var i=0;i<json.length;i++){
         if(json[i]['flight']!=null){
-            pushback(json[i]);
+            massage[no].push(json[i]);
         }
     }
-    // massage[no] = JSON.parse(msg.toString());
 });
-function pushback(json){
-    massage[no].push(json);
-}
+
 router.get('/:id', function(req, res, next) {
     if(massage[req.params.id]==null){
         res.send("Invalid path");
