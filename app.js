@@ -14,7 +14,9 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
 mongoose.Promise = global.Promise;
+
 mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware')
+// mongoose.connect('mongodb://127.0.0.1:27017/aircraft')
   .then(() =>  console.log('connection succesful'))
   .catch((err) => console.error(err));
   var db = mongoose.connection;
