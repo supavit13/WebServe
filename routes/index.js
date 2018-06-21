@@ -6,8 +6,16 @@ var router = express.Router();
 router.get('/', function(req, res, next) {
   AircraftController.home(req,res);
 });
-router.get('/data', function(req, res, next) {
+router.get('/data/:node/:flight/:stime/:etime', function(req, res, next) {
   AircraftController.getdata(req,res);
+  // res.send(req.query.node);
+});
+router.get('/view', function(req, res, next) {
+  AircraftController.view(req,res);
+  // res.send(req.query.node);
+});
+router.get('/compare/:flight', function(req, res, next) {
+  AircraftController.comparetime(req,res);
   // res.send(req.query.node);
 });
 

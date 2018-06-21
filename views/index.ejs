@@ -1,48 +1,95 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-    <script
-      src="https://code.jquery.com/jquery-3.3.1.js"
-      integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
-      crossorigin="anonymous"></script>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-    <p>Node : <select id="node">
-        <option value="all">all</option>
+<% include head.ejs %>
+
+<body>
+  <h1>
+    <%= title %>
+  </h1>
+  <p>Welcome to
+    <%= title %>
+  </p>
+  <p>Node :
+    <select id="node">
+      <option value="all">all</option>
       <% for(var i=1;i <= node_number;i++) { %>
-        <option value="<%= i %>"><%= i %></option>
-      <% } %>
-    </select></p>
-    <p>Flight : <input type="text" id="flight"></p>
-    <p><font color="red">*Minimum timestamp : <%= date %></font></p>
-    <!-- <p>Time range : <input id="stime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> to <input id="etime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> </p>  -->
-    <p>Time range : <input id="stime" type="datetime-local" > to <input id="etime" type="datetime-local" > </p> 
-    <p><button onclick="filter()">Submit</button></p>
-  </body>
-  <script>
-    function filter(){
-      var url = "";
-      var flight = $("#flight").val();
-      var stime = $("#stime").val();
-      var etime = $("#etime").val();
-      if($("#flight").val() == ""){
-        flight = "all";
-      }
-      if($("#stime").val() == ""){
-        stime = "all";
-      }
-      if($("#etime").val() == ""){
-        etime = "all";
-      }
-      url = "/data?node="+$("#node").val()+"&flight="+flight+"&stime="+stime+"&etime="+etime;
-      window.location.replace(url);
+        <option value="<%= i %>">
+          <%= i %>
+        </option>
+        <% } %>
+    </select>
+  </p>
+  <p>Flight :
+    <input type="text" id="flight">
+  </p>
+  <p>
+    <font color="red">*Minimum timestamp :
+      <%= date %>
+    </font>
+  </p>
+  <!-- <p>Time range : <input id="stime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> to <input id="etime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> </p>  -->
+  <div style="display: none">
+  
+  
+    <p>Time range : </p>
+    <p> Start at :
+      <input id="stime" type="datetime-local"> </p>
+    <p> End at :
+      <input id="etime" type="datetime-local"> </p>
+  </div>
+      <p>
+        <button onclick="filter()">Get JSON</button>
+      </p>
+      <p>
+        <button onclick="viewtable()">View table</button>
+      </p>
+      <p>
+        <button onclick="compare()">Compare time</button>
+      </p>
+  
+</body>
+<script>
+  function filter() {
+    var url = "";
+    var flight = $("#flight").val();
+    var stime = $("#stime").val();
+    var etime = $("#etime").val();
+    if ($("#flight").val() == "") {
+      flight = "all";
     }
-  </script>
+    if ($("#stime").val() == "") {
+      stime = "all";
+    }
+    if ($("#etime").val() == "") {
+      etime = "all";
+    }
+    url = "/data/" + $("#node").val() + "/" + flight + "/" + stime + "/" + etime;
+    window.location.replace(url);
+  }
+  function viewtable() {
+    var url = "";
+    var flight = $("#flight").val();
+    var stime = $("#stime").val();
+    var etime = $("#etime").val();
+    if ($("#flight").val() == "") {
+      flight = "all";
+    }
+    if ($("#stime").val() == "") {
+      stime = "all";
+    }
+    if ($("#etime").val() == "") {
+      etime = "all";
+    }
+    url = "/view?node=" + $("#node").val() + "&flight=" + flight + "&stime=" + stime + "&etime=" + etime;
+    window.location.replace(url);
+  }
+  function compare() {
+    var url = "";
+    var flight = $("#flight").val();
+    if ($("#flight").val() == "") {
+      flight = "all";
+    }
+    url = "/compare" +"/" + flight;
+    window.location.replace(url);
+  }
+</script>
+
 </html>

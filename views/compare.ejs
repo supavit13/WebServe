@@ -1,0 +1,43 @@
+<% include head.ejs %>
+
+<body>
+    <h1><%= node1[0].flight %></h1>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Lat Node 1</th>
+                <th>Lat Node 2</th>
+                <th>Lat filter 1&2</th>
+                <th>Lon Node 1</th>
+                <th>Lon Node 2</th>
+                <th>Lon filter 1&2</th>
+                <th>Unixtime Node 1</th>
+                <th>Unixtime Node 2</th>
+                <th>Unixtime filter 1&2</th>
+                <th>DB_time Node 1</th>
+                <th>DB_time Node 2</th>
+                <th>DB_time filter 1&2</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var i = 0 ; i < min ; i++) { %>
+            <tr>
+                <td><%= node1[i].lat %></td>
+                <td><%= node2[i].lat %></td>
+                <td><%= filter[i].lat %></td>
+                <td><%= node1[i].lon %></td>
+                <td><%= node2[i].lon %></td>
+                <td><%= filter[i].lon %></td>
+                <td><%= node1[i].unixtime %></td>
+                <td><%= node2[i].unixtime %></td>
+                <td><%= filter[i].unixtime %></td>
+                <td><%= node1[i].date %></td>
+                <td><%= node2[i].date %></td>
+                <td><%= filter[i].date %></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+
+</html>

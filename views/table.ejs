@@ -1,0 +1,54 @@
+<% include head.ejs %>
+
+<body>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>hex</th>
+                <th>squawk</th>
+                <th>flight</th>
+                <th>lat</th>
+                <th>lon</th>
+                <th>nucp</th>
+                <th>seen_pos</th>
+                <th>altitude</th>
+                <th>vert_rate</th>
+                <th>track</th>
+                <th>speed</th>
+                <th>category</th>
+                <th>messages</th>
+                <th>seen</th>
+                <th>rssi</th>
+                <th>node_number</th>
+                <th>unixtime</th>
+                <th>save_date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var i = 0 ; i < data.length ; i++) { %>
+            <tr>
+                <td><%= data[i].hex %></td>
+                <td><%= data[i].squawk %></td>
+                <td><%= data[i].flight %></td>
+                <td><%= data[i].lat %></td>
+                <td><%= data[i].lon %></td>
+                <td><%= data[i].nucp %></td>
+                <td><%= data[i].seen_pos %></td>
+                <td><%= data[i].altitude %></td>
+                <td><%= data[i].vert_rate %></td>
+                <td><%= data[i].track %></td>
+                <td><%= data[i].speed %></td>
+                <td><%= data[i].category %></td>
+                <td><%= data[i].messages %></td>
+                <td><%= data[i].seen %></td>
+                <td><%= data[i].rssi %></td>
+                <td><%= data[i].node_number %></td>
+                <td><%= data[i].unixtime %></td>
+                <td><%= data[i].date %></td>
+            </tr>
+            <% } %>
+        </tbody>
+    </table>
+</body>
+
+</html>
