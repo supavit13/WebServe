@@ -7,6 +7,8 @@ var mqtt = require('mqtt');
 var url = require('url');
 var express = require('express');
 var request = require('request-promise');
+var udp = require('dgram');
+var UDPserver = udp.createSocket('udp4');
 var router = express.Router();
 var AircraftController = {};
 var options = {
@@ -20,7 +22,21 @@ client.on('connect', function () {
     client.subscribe('node1');
     client.subscribe('node2');
 });
-var massage = new Array();
+
+UDPserver.on('listening', function () {
+    var address = UDPserver.address();
+    console.log('UDP Server listening on ' + address.address + ":" + address.port);
+});
+
+var msg = "";
+UDPserver.on('message', function (message, remote) {
+    if (message != null) {
+        console.log("massage is " + message + " from " + remote);
+        msg = message;
+    }
+});
+
+UDPserver.bind(6000);
 
 function createAircraft(json, no) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
@@ -48,7 +64,7 @@ function createAircraft(json, no) {
         date: date
     };
     //filter
-    if(no == 1){
+    if (no == 1) {
         Node1.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
             if (err) console.log("Error:", err);
             else if (result == null) {
@@ -64,12 +80,12 @@ function createAircraft(json, no) {
                         if (err) console.log("Error:", err);
                         else console.log("insert Node1 successful at " + date);
                     });
-    
+
                 }
             }
         });
     }
-    if(no == 2){
+    if (no == 2) {
         Node2.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
             if (err) console.log("Error:", err);
             else if (result == null) {
@@ -85,12 +101,12 @@ function createAircraft(json, no) {
                         if (err) console.log("Error:", err);
                         else console.log("insert Node2 successful at " + date);
                     });
-    
+
                 }
             }
         });
     }
-    
+
     Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
         if (err) console.log("Error:", err);
         else if (result == null) {
@@ -99,28 +115,17 @@ function createAircraft(json, no) {
                 if (err) console.log("Error:", err);
                 else console.log("insert aircraft successful at " + date);
             });
-            // var newNode1 = new Node1(schema);
-            // newNode1.save(function (err){
-            //     if(err) console.log("Error:", err);
-            //     else console.log("insert Node1 successful at "+date);
-            // }); 
-            // var newNode2 = new Node2(schema);
-            // newNode2.save(function (err){
-            //     if(err) console.log("Error:", err);
-            //     else console.log("insert Node2 successful at "+date);
-            // });  
         } else {
-            // var resulttime = moment(result.date).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
-            // var schematime = moment(schema.date).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
-            // console.log(result);
-            // console.log(json.lat);
+            var unixtimes = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
             if (result.lat != schema.lat) {
                 var newAircraft = new Aircraft(schema);
                 newAircraft.save(function (err) {
                     if (err) console.log("Error:", err);
                     else console.log("insert aircraft successful at " + date);
                 });
-
+            } else if (result.lat == schema.lat && result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
+                Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
+                console.log("update minimum time");
             }
         }
     });
@@ -129,14 +134,18 @@ function createAircraft(json, no) {
 client.on('message', function (topic, msg) {
     // console.log(topic);
     var no = parseInt(topic.split('e')[1]);
-    massage[no] = [];
     var json = JSON.parse(msg.toString());
-    for (var i = 0; i < json.length; i++) {
-        if (json[i]['flight'] != null && json[i]['lat'] != null) {
-            massage[no].push(json[i]);
-            createAircraft(json[i], no);
-        }
+    if (json['flight'] != null && json['lat'] != null) {
+        createAircraft(json, no);
     }
+    // massage[no] = [];
+    // var json = JSON.parse(msg.toString());
+    // for (var i = 0; i < json.length; i++) {
+    //     if (json[i]['flight'] != null && json[i]['lat'] != null) {
+    //         massage[no].push(json[i]);
+    //         createAircraft(json[i], no);
+    //     }
+    // }
 });
 
 AircraftController.readJSON = function (req, res) {
@@ -210,20 +219,20 @@ AircraftController.comparetime = function (req, res) {
     if (req.params.flight != "all") qry.flight = req.params.flight;
     Aircraft.find(qry).exec(function (err1, result1) {
         if (err1) res.send(err1);
-        else{
-            Node1.find(qry).exec(function(err2,result2){
+        else {
+            Node1.find(qry).exec(function (err2, result2) {
                 if (err2) res.send(err2);
-                else{
-                    Node2.find(qry).exec(function(err3,result3){
+                else {
+                    Node2.find(qry).exec(function (err3, result3) {
                         if (err3) res.send(err3);
-                        else{
-                            var min = Math.min(result1.length , Math.min(result2.length , result3.length));
-                            for(var i =0 ;i< min ;i++){
+                        else {
+                            var min = Math.min(result1.length, Math.min(result2.length, result3.length));
+                            for (var i = 0; i < min; i++) {
                                 result1[i].unixtime = moment(result1[i].unixtime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
                                 result2[i].unixtime = moment(result2[i].unixtime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
                                 result3[i].unixtime = moment(result3[i].unixtime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
                             }
-                            res.render('compare',{node1 : result2 , node2 : result3 , filter : result1 , min : min});
+                            res.render('compare', { node1: result2, node2: result3, filter: result1, min: min });
                         }
                     });
                 }
