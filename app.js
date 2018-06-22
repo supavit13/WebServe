@@ -8,10 +8,15 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var apiRouter = require('./routes/api');
 
+var AircraftController = require("./controllers/AircraftController.js");
+
 var mongoose = require('mongoose');
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
+
+var udp = require('dgram');
+var UDPserver = udp.createSocket('udp4');
 
 mongoose.Promise = global.Promise;
 
@@ -52,5 +57,26 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+UDPserver.on('listening', function () {
+  var address = UDPserver.address();
+  console.log('UDP Server listening on ' + address.address + ":" + address.port);
+});
+
+var msg = "";
+UDPserver.on('message', function (message, remote) {
+  if (message != null) {
+      // console.log("massage is " + message + " from " + remote);
+      msg = message;
+      var json = JSON.parse(msg.toString('utf8'));
+      if(json.flight != null){
+        AircraftController.adsbData(json);
+      }
+      
+  }
+});
+
+// UDPserver.bind(process.argv[2].split(':')[0],parseInt(process.argv[2].split(':')[1]));
+UDPserver.bind(6000);
 
 module.exports = app;
