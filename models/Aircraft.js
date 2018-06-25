@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var express = require('express');
-var bcrypt = require('bcrypt');
 var Schema = mongoose.Schema;
 var Aircraft = new Schema({
     hex: {
