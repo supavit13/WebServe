@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var moment = require('moment-timezone');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -65,8 +66,9 @@ UDPserver.on('listening', function () {
 
 var msg = "";
 UDPserver.on('message', function (message, remote) {
+  var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
   if (message != null) {
-      // console.log("massage is " + message + " from " + remote);
+      console.log("massage " + " from " + remote + " "+ date);
       msg = message;
       var json = JSON.parse(msg.toString('utf8'));
       if(json.flight != null){
