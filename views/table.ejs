@@ -5,6 +5,8 @@
     <table id="example" class="table table-striped table-bordered">
         <thead>
             <tr>
+                <th>DBtime</th>
+                <th>unixtime</th>
                 <th>hex</th>
                 <th>squawk</th>
                 <th>flight</th>
@@ -21,13 +23,14 @@
                 <th>seen</th>
                 <th>rssi</th>
                 <th>node_number</th>
-                <th>unixtime</th>
-                <th>save_date</th>
+                
             </tr>
         </thead>
         <tbody>
             <% for(var i = 0 ; i < data.length ; i++) { %>
             <tr>
+                <td><%= data[i].date %></td>
+                <td><%= data[i].unixtime %></td>
                 <td><%= data[i].hex %></td>
                 <td><%= data[i].squawk %></td>
                 <td><%= data[i].flight %></td>
@@ -44,8 +47,7 @@
                 <td><%= data[i].seen %></td>
                 <td><%= data[i].rssi %></td>
                 <td><%= data[i].node_number %></td>
-                <td><%= data[i].unixtime %></td>
-                <td><%= data[i].date %></td>
+                
             </tr>
             <% } %>
         </tbody>
