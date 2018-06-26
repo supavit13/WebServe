@@ -1,7 +1,10 @@
 <% include head.ejs %>
 <script>
-    $(window).on('load', function() {
-   $("#example").hide();
+    $(function(){
+    $('body').hide();
+});
+$(window).load(function() {
+    $("body").show();
 });
 </script>
 <body>
