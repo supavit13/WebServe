@@ -19,6 +19,7 @@ var MongoStore = require('connect-mongo')(session);
 var udp = require('dgram');
 var UDPserver = udp.createSocket('udp4');
 
+
 mongoose.Promise = global.Promise;
 
 // mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware')
@@ -81,5 +82,6 @@ UDPserver.on('message', function (message, remote) {
 
 // UDPserver.bind(process.argv[2].split(':')[0],parseInt(process.argv[2].split(':')[1]));
 UDPserver.bind(6000);
+
 
 module.exports = app;

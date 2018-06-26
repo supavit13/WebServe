@@ -7,7 +7,7 @@
   <p>Welcome to
     <%= title %>
   </p>
-  <p>Node :
+  <p style="display: none">Node :
     <select id="node">
       <option value="all">all</option>
       <% for(var i=1;i <= node_number;i++) { %>
@@ -20,14 +20,14 @@
   <p>Flight :
     <input type="text" id="flight">
   </p>
-  <p>
-    <font color="red">*Minimum timestamp :
-      <%= date %>
-    </font>
-  </p>
+  
   <!-- <p>Time range : <input id="stime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> to <input id="etime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> </p>  -->
   <div style="display: none">
-  
+      <p>
+          <font color="red">*Minimum timestamp :
+            <%= date %>
+          </font>
+        </p>
   
     <p>Time range : </p>
     <p> Start at :
@@ -36,10 +36,10 @@
       <input id="etime" type="datetime-local"> </p>
   </div>
       <p>
-        <button onclick="filter()">Get JSON</button>
+        <button class="btn" onclick="filter()">Get JSON</button>
       </p>
       <p>
-        <button onclick="viewtable()">View table</button>
+        <button class="btn" onclick="viewtable()">View table</button>
       </p>
       <!-- <p>
         <button onclick="compare()">Compare time</button>
