@@ -111,9 +111,7 @@ function createAircraft(json, no) {
 
 
 AircraftController.adsbData = function(msg){
-    for(var i=0;i<msg.length;i++){
-        createAircraft(msg[i] , msg[i]['node_number']);
-    }
+    createAircraft(msg , msg['node_number']);
     
 }
 
