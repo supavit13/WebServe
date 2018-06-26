@@ -70,6 +70,7 @@ UDPserver.on('message', function (message, remote) {
   if (message != null) {
       console.log("massage " + " from " + remote + " "+ date);
       msg = message;
+      console.log("data is " + msg.toString('utf8'));
       var json = JSON.parse(msg.toString('utf8'));
       if(json.flight != null){
         AircraftController.adsbData(json);
