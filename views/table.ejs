@@ -26,34 +26,40 @@
                 
             </tr>
         </thead>
-        <tbody>
-            <% for(var i = 0 ; i < data.length ; i++) { %>
-            <tr>
-                <td><%= data[i].date %></td>
-                <td><%= data[i].unixtime %></td>
-                <td><%= data[i].hex %></td>
-                <td><%= data[i].squawk %></td>
-                <td><%= data[i].flight %></td>
-                <td><%= data[i].lat %></td>
-                <td><%= data[i].lon %></td>
-                <td><%= data[i].nucp %></td>
-                <td><%= data[i].seen_pos %></td>
-                <td><%= data[i].altitude %></td>
-                <td><%= data[i].vert_rate %></td>
-                <td><%= data[i].track %></td>
-                <td><%= data[i].speed %></td>
-                <td><%= data[i].category %></td>
-                <td><%= data[i].messages %></td>
-                <td><%= data[i].seen %></td>
-                <td><%= data[i].rssi %></td>
-                <td><%= data[i].node_number %></td>
-                
-            </tr>
-            <% } %>
+        <tbody class="tabody">
+            
         </tbody>
     </table>
     <button class="btn" style="float : right"><a href="/">Back</a></button>
 </body>
-
+<script>
+    var json = '<%- JSON.stringify(data) %>'
+    console.log(json);
+    json = JSON.parse(json);
+    var str="";
+    for(var i=0;i<json.length;i++){
+        str += "<tr>"+
+                "<td>" + json[i].date + "</td>"+
+                "<td>" + json[i].unixtime + "</td>"+
+                "<td>" + json[i].hex + "</td>"+
+                "<td>" + json[i].squawk + "</td>"+
+                "<td>" + json[i].flight + "</td>"+
+                "<td>" + json[i].lat + "</td>"+
+                "<td>" + json[i].lon + "</td>"+
+                "<td>" + json[i].nucp + "</td>"+
+                "<td>" + json[i].seen_pos + "</td>"+
+                "<td>" + json[i].altitude + "</td>"+
+                "<td>" + json[i].vert_rate + "</td>"+
+                "<td>" + json[i].track + "</td>"+
+                "<td>" + json[i].speed + "</td>"+
+                "<td>" + json[i].category + "</td>"+
+                "<td>" + json[i].messages + "</td>"+
+                "<td>" + json[i].seen + "</td>"+
+                "<td>" + json[i].rssi + "</td>"+
+                "<td>" + json[i].node_number + "</td>"+ 
+            "</tr>";
+    }
+    $(".tabody").append(str);
+</script>
 
 </html>
