@@ -114,6 +114,11 @@ AircraftController.adsbData = function(msg){
     createAircraft(msg , msg['node_number']);
     
 }
+AircraftController.putdata = function(req , res){
+    console.log(req.body['unixtime']);
+    createAircraft(req.body , req.body['node_number']);
+    res.send(200);   
+}
 
 AircraftController.readJSON = function (req, res) {
     if (massage[req.params.id] == null) {

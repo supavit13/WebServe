@@ -14,6 +14,10 @@ router.get('/view', function(req, res, next) {
   AircraftController.view(req,res);
   // res.send(req.query.node);
 });
+router.post('/putdata', function(req, res, next) {
+  AircraftController.putdata(req,res);
+  
+});
 router.get('/compare/:flight', function(req, res, next) {
   AircraftController.comparetime(req,res);
   // res.send(req.query.node);
