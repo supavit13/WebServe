@@ -47,14 +47,14 @@ function createAircraft(json, no) {
                 var newNode1 = new Node1(schema);
                 newNode1.save(function (err) {
                     if (err) console.log("Error:", err);
-                    else console.log("insert "+schema.flight+" "+schema.altitude+" Node1 successful at " + date);
+                    else console.log("insert " + schema.flight + " " + schema.altitude + " Node1 successful at " + date);
                 });
             } else {
                 if (result.lat != schema.lat) {
                     var newNode1 = new Node1(schema);
                     newNode1.save(function (err) {
                         if (err) console.log("Error:", err);
-                        else console.log("insert "+schema.flight+" "+schema.altitude+" Node1 successful at " + date);
+                        else console.log("insert " + schema.flight + " " + schema.altitude + " Node1 successful at " + date);
                     });
 
                 }
@@ -68,14 +68,14 @@ function createAircraft(json, no) {
                 var newNode2 = new Node2(schema);
                 newNode2.save(function (err) {
                     if (err) console.log("Error:", err);
-                    else console.log("insert "+schema.flight+" "+schema.altitude+" Node2 successful at " + date);
+                    else console.log("insert " + schema.flight + " " + schema.altitude + " Node2 successful at " + date);
                 });
             } else {
                 if (result.lat != schema.lat) {
                     var newNode2 = new Node2(schema);
                     newNode2.save(function (err) {
                         if (err) console.log("Error:", err);
-                        else console.log("insert "+schema.flight+" "+schema.altitude+" Node2 successful at " + date);
+                        else console.log("insert " + schema.flight + " " + schema.altitude + " Node2 successful at " + date);
                     });
 
                 }
@@ -89,7 +89,7 @@ function createAircraft(json, no) {
             var newAircraft = new Aircraft(schema);
             newAircraft.save(function (err) {
                 if (err) console.log("Error:", err);
-                else console.log("insert "+schema.flight+" "+schema.altitude+" aircraft successful at " + date);
+                else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
             });
         } else {
             var unixtimes = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
@@ -97,7 +97,7 @@ function createAircraft(json, no) {
                 var newAircraft = new Aircraft(schema);
                 newAircraft.save(function (err) {
                     if (err) console.log("Error:", err);
-                    else console.log("insert "+schema.flight+" "+schema.altitude+" aircraft successful at " + date);
+                    else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
                 });
             } else if (result.lat == schema.lat && result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
                 console.log("update to minimum");
@@ -110,14 +110,17 @@ function createAircraft(json, no) {
 
 
 
-AircraftController.adsbData = function(msg){
-    createAircraft(msg , msg['node_number']);
-    
+AircraftController.adsbData = function (msg) {
+    createAircraft(msg, msg['node_number']);
+
 }
-AircraftController.putdata = function(req , res){
-    console.log(req.body['unixtime']);
-    createAircraft(req.body , req.body['node_number']);
-    res.send(200);   
+AircraftController.putdata = function (req, res) {
+    var data = req.body;
+    for (var i = 0; i < data.length; i++) {
+        console.log(data[i].unixtime);
+        createAircraft(data[i], data[i]['node_number']);
+    }
+    res.sendStatus(200);
 }
 
 AircraftController.readJSON = function (req, res) {
