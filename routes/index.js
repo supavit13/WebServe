@@ -18,7 +18,7 @@ router.post('/putdata', function(req, res, next) {
   AircraftController.putdata(req,res);
   
 });
-router.post('/holodata', function(req, res, next) {
+router.get('/holodata', function(req, res, next) {
   AircraftController.holodata(req,res);
   
 });
