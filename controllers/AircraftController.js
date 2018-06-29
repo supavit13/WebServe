@@ -202,8 +202,8 @@ AircraftController.getdata = function (req, res) {
         else{
             var len = result.length;
             var json = [];
-            if(len >= 100000){
-                for(var i=len-1;i>len-100000;i--){
+            if(len >= 50000){
+                for(var i=len-1;i>len-50000;i--){
                     json.push(result[i]);
                 }
                 res.json(json);
