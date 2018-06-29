@@ -200,16 +200,17 @@ AircraftController.getdata = function (req, res) {
     Aircraft.find(qry).limit( 10 ).exec(function (err, result) {
         if (err) res.send(err);
         else{
-            var len = result.length;
-            var json = [];
-            if(len >= 10000){
-                for(var i=len-1;i>len-10000;i--){
-                    json.push(result[i]);
-                }
-                res.json(json);
-            }else{
-                res.json(result);
-            }
+            // var len = result.length;
+            // var json = [];
+            // if(len >= 10000){
+            //     for(var i=len-1;i>len-10000;i--){
+            //         json.push(result[i]);
+            //     }
+            //     res.json(json);
+            // }else{
+            //     res.json(result);
+            // }
+            res.json(result);
         }
         
     });
