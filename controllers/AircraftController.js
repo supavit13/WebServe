@@ -55,8 +55,13 @@ function createNew(json){
                 speed : json.speed,
                 time : date
             }
-            Hololens.update({date:date, "data.flight" : json.flight},{lastest_time : date,$push : {"data.$.points": {schema} } });
-            console.log("update complete!!");
+            Hololens.update({date:date, "data.flight" : json.flight},{lastest_time : date,$push : {"data.$.points": {schema} } },function(err , result){
+                if(err) res.send(err);
+                else{
+                    console.log("update complete!!");
+                }
+            });
+            
 
         }
     })
