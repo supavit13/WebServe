@@ -1,95 +1,99 @@
 <% include head.ejs %>
 
-<body>
-  <h1>
-    <%= title %>
-  </h1>
-  <p>Welcome to
-    <%= title %>
-  </p>
-  <p style="display: none">Node :
-    <select id="node">
-      <option value="all">all</option>
-      <% for(var i=1;i <= node_number;i++) { %>
-        <option value="<%= i %>">
-          <%= i %>
-        </option>
-        <% } %>
-    </select>
-  </p>
-  <p>Flight :
-    <input type="text" id="flight">
-  </p>
-  
-  <!-- <p>Time range : <input id="stime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> to <input id="etime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> </p>  -->
-  <div style="">
+  <body>
+    <h1>
+      <%= title %>
+    </h1>
+    <p>Welcome to
+      <%= title %>
+    </p>
+    <p style="display: none">Node :
+      <select id="node">
+        <option value="all">all</option>
+        <% for(var i=1;i <= node_number;i++) { %>
+          <option value="<%= i %>">
+            <%= i %>
+          </option>
+          <% } %>
+      </select>
+    </p>
+    <p>Flight :
+      <input type="text" id="flight">
+    </p>
+
+    <!-- <p>Time range : <input id="stime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> to <input id="etime" type="text" placeholder="YYYY-MM-DD HH:mm:ss"> </p>  -->
+    <div style="">
       <p>
-          <font color="red">*Minimum timestamp :
-            <%= date %>
-          </font>
-        </p>
-  
-    <p>Time range : </p>
-    <p> Start at :
-      <input id="stime" type="datetime-local"> </p>
-    <p> End at :
-      <input id="etime" type="datetime-local"> </p>
-  </div>
-      <p>
-        <button class="btn" onclick="filter()">Get JSON</button>
+        <font color="red">*Minimum timestamp :
+          <%= date %>
+        </font>
       </p>
-      <p>
-        <button class="btn" onclick="viewtable()">View table</button>
-      </p>
-      <!-- <p>
+
+      <p>Time range : </p>
+      <p> Start at :
+        <input id="stime" type="datetime-local"> </p>
+      <p> End at :
+        <input id="etime" type="datetime-local"> </p>
+    </div>
+    <p>
+      <font color="red">Limit of returning 1000 rows of data and order by unix time.
+      </font>
+    </p>
+    <p>
+      <button class="btn" onclick="filter()">Get JSON</button>
+    </p>
+    <p>
+      <button class="btn" onclick="viewtable()">View table</button>
+    </p>
+    <!-- <p>
         <button onclick="compare()">Compare time</button>
       </p> -->
-  
-</body>
-<script>
-  function filter() {
-    var url = "";
-    var flight = $("#flight").val();
-    var stime = $("#stime").val();
-    var etime = $("#etime").val();
-    if ($("#flight").val() == "") {
-      flight = "all";
-    }
-    if ($("#stime").val() == "") {
-      stime = "all";
-    }
-    if ($("#etime").val() == "") {
-      etime = "all";
-    }
-    url = "/data/" + $("#node").val() + "/" + flight + "/" + stime + "/" + etime;
-    window.location.replace(url);
-  }
-  function viewtable() {
-    var url = "";
-    var flight = $("#flight").val();
-    var stime = $("#stime").val();
-    var etime = $("#etime").val();
-    if ($("#flight").val() == "") {
-      flight = "all";
-    }
-    if ($("#stime").val() == "") {
-      stime = "all";
-    }
-    if ($("#etime").val() == "") {
-      etime = "all";
-    }
-    url = "/view?node=" + $("#node").val() + "&flight=" + flight + "&stime=" + stime + "&etime=" + etime;
-    window.location.replace(url);
-  }
-  function compare() {
-    var url = "";
-    var flight = $("#flight").val();
-    if ($("#flight").val() == "") {
-      flight = "all";
-    }
-    url = "/compare" +"/" + flight;
-    window.location.replace(url);
-  }
-</script>
 
-</html>
+  </body>
+  <script>
+    function filter() {
+      var url = "";
+      var flight = $("#flight").val();
+      var stime = $("#stime").val();
+      var etime = $("#etime").val();
+      if ($("#flight").val() == "") {
+        flight = "all";
+      }
+      if ($("#stime").val() == "") {
+        stime = "all";
+      }
+      if ($("#etime").val() == "") {
+        etime = "all";
+      }
+      url = "/data/" + $("#node").val() + "/" + flight + "/" + stime + "/" + etime;
+      window.location.replace(url);
+    }
+    function viewtable() {
+      var url = "";
+      var flight = $("#flight").val();
+      var stime = $("#stime").val();
+      var etime = $("#etime").val();
+      if ($("#flight").val() == "") {
+        flight = "all";
+      }
+      if ($("#stime").val() == "") {
+        stime = "all";
+      }
+      if ($("#etime").val() == "") {
+        etime = "all";
+      }
+      url = "/view?node=" + $("#node").val() + "&flight=" + flight + "&stime=" + stime + "&etime=" + etime;
+      window.location.replace(url);
+    }
+    function compare() {
+      var url = "";
+      var flight = $("#flight").val();
+      if ($("#flight").val() == "") {
+        flight = "all";
+      }
+      url = "/compare" + "/" + flight;
+      window.location.replace(url);
+    }
+  </script>
+
+  </html>
