@@ -141,7 +141,7 @@ AircraftController.readJSON = function (req, res) {
     if (jsonData.length > 0) {
         res.json(jsonData);
     }else{
-        res.json(tempData);
+        res.redirect('/api');
     }
 }
 
