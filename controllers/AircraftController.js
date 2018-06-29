@@ -11,7 +11,7 @@ var AircraftController = {};
 
 
 
-var jsonData = {};
+var jsonData = [];
 function createAircraft(json, no) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
     var str = json.flight;
@@ -87,7 +87,7 @@ function createAircraft(json, no) {
         if (err) console.log("Error:", err);
         else if (result == null) {
             var newAircraft = new Aircraft(schema);
-            jsonData = schema;
+            jsonData.push(schema);
             newAircraft.save(function (err) {
                 if (err) console.log("Error:", err);
                 else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
@@ -96,7 +96,7 @@ function createAircraft(json, no) {
             var unixtimes = new Date() / 1000;
             if (result.lat != schema.lat) {
                 var newAircraft = new Aircraft(schema);
-                jsonData = schema;
+                jsonData.push(schema);
                 newAircraft.save(function (err) {
                     if (err) console.log("Error:", err);
                     else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
@@ -104,7 +104,7 @@ function createAircraft(json, no) {
             } else if (result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
                 console.log("update to minimum");
                 Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
-                jsonData = schema;
+                jsonData.push(schema);
                 console.log("update minimum time");
             }
         }
@@ -121,6 +121,7 @@ AircraftController.putdata = function (req, res) {
     var prev = new Date() / 1000;
     console.log(prev)
     var data = req.body;
+    jsonData = [];
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
         createAircraft(data[i], data[i]['node_number']);
