@@ -106,7 +106,7 @@ AircraftController.readJSON = function (req, res) {
 
 AircraftController.holodata = function (req, res) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00").valueOf();
-    var tomorrow = (moment(date).valueOf()/1000)+86399;
+    var tomorrow = (moment(date).valueOf()/1000)+1;
     var schema = [];
     Aircraft.find({unixtime : {$gte : moment(date).valueOf()/1000, $lte : tomorrow}}).exec(function(err,result){
         
