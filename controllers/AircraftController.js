@@ -122,7 +122,9 @@ AircraftController.putdata = function (req, res) {
     var prev = new Date() / 1000;
     console.log(prev)
     var data = req.body;
-    tempData = jsonData;
+    if(jsonData != []){
+        tempData = jsonData;
+    }
     jsonData = [];
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
