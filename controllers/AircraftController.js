@@ -17,7 +17,7 @@ var tempData = [];
 function createNew(json){
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD");
     var schema = {};
-    Hololens.find({date : date }).exec(function(err , result){
+    Hololens.findOne({date : date }).exec(function(err , result){
         if(err) res.send(err);
         else if(result.data == null){
             var schema = {
@@ -139,7 +139,7 @@ AircraftController.putdata = function (req, res) {
     jsonData = [];
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
-        createNew(data[i]);
+        // createNew(data[i]);
         // createAircraft(data[i], data[i]['node_number']);
         // Aircraft.insertMany(jsonData);
     }
