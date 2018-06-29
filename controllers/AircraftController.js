@@ -197,7 +197,7 @@ AircraftController.getdata = function (req, res) {
         qry.date = { $lte: etime };
     }
     // console.log(qry);
-    Aircraft.find(qry).exec(function (err, result) {
+    Aircraft.find(qry).limit( 10 ).exec(function (err, result) {
         if (err) res.send(err);
         else{
             var len = result.length;
