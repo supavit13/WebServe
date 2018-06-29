@@ -131,7 +131,7 @@ AircraftController.view = function (req, res) {
         qry.date = { $lte: etime };
     }
     // console.log(qry);
-    Aircraft.find(qry).exec(function (err, result) {
+    Aircraft.find(qry).limit( 1000 ).sort({ unixtime : -1 }).exec(function (err, result) {
         if (err) res.send(err);
         res.render('table', { data: result });
     });
@@ -154,19 +154,9 @@ AircraftController.getdata = function (req, res) {
         qry.date = { $lte: etime };
     }
     // console.log(qry);
-    Aircraft.find(qry).limit( 1000 ).sort({ unixtime : -1 }).exec(function (err, result) {
+    Aircraft.find(qry).limit( 1000 ).sort({ unixtime : -1 }).exec(function (err, result) { //limit data 1000 records
         if (err) res.send(err);
         else{
-            // var len = result.length;
-            // var json = [];
-            // if(len >= 10000){
-            //     for(var i=len-1;i>len-10000;i--){
-            //         json.push(result[i]);
-            //     }
-            //     res.json(json);
-            // }else{
-            //     res.json(result);
-            // }
             res.json(result);
         }
         
