@@ -44,25 +44,25 @@ function createAircraft(json, no) {
     Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
         if (err) console.log("Error:", err);
         else if (result == null) {
-            // var newAircraft = new Aircraft(schema);
+            var newAircraft = new Aircraft(schema);
             jsonData.push(schema);
-            // newAircraft.save(function (err) {
-            //     if (err) console.log("Error:", err);
-            //     else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
-            // });
+            newAircraft.save(function (err) {
+                if (err) console.log("Error:", err);
+                else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
+            });
         } else {
             var unixtimes = new Date() / 1000;
             if (result.lat != schema.lat) {
-                // var newAircraft = new Aircraft(schema);
+                var newAircraft = new Aircraft(schema);
                 jsonData.push(schema);
-                // newAircraft.save(function (err) {
-                //     if (err) console.log("Error:", err);
-                //     else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
-                // });
+                newAircraft.save(function (err) {
+                    if (err) console.log("Error:", err);
+                    else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
+                });
             } else if (result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
                 console.log("update to minimum");
                 Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
-                // jsonData.push(schema);
+                jsonData.push(schema);
                 console.log("update " + schema.flight + " dbtime :" + result.unixtime.toString() +" adsb :"+schema.unixtime.toString()+ " adsb - now :" + (schema.unixtime - unixtimes).toString());
             }
         }
@@ -87,12 +87,8 @@ AircraftController.putdata = function (req, res) {
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
         createAircraft(data[i], data[i]['node_number']);
-        console.log("insert " + data[i].flight + " aircraft successful at " + (new Data()/1000).toString());
+        // Aircraft.insertMany(jsonData);
     }
-    if(jsonData.length >0){
-        Aircraft.insertMany(jsonData);
-    }
-    
     var curr = new Date() / 1000;
     console.log(curr)
     console.log(parseFloat(curr) - parseFloat(prev));
