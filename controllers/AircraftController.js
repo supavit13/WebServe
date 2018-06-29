@@ -92,7 +92,7 @@ function createAircraft(json, no) {
                 else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
             });
         } else {
-            var unixtimes = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
+            var unixtimes = new Date() / 1000;
             if (result.lat != schema.lat) {
                 var newAircraft = new Aircraft(schema);
                 newAircraft.save(function (err) {
