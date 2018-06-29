@@ -18,6 +18,7 @@ var MongoStore = require('connect-mongo')(session);
 
 var udp = require('dgram');
 var UDPserver = udp.createSocket('udp4');
+var bodyParser = require('body-parser')
 
 
 mongoose.Promise = global.Promise;
@@ -43,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api', apiRouter);
+app.use(bodyParser.json({ limit: '30mb' }))
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
