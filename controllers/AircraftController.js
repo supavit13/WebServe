@@ -199,7 +199,19 @@ AircraftController.getdata = function (req, res) {
     // console.log(qry);
     Aircraft.find(qry).exec(function (err, result) {
         if (err) res.send(err);
-        res.json(result);
+        else{
+            var len = result.length;
+            var json = [];
+            if(len >= 100000){
+                for(var i=len-1;i>len-100000;i--){
+                    json.push(result[i]);
+                }
+                res.json(json);
+            }else{
+                res.json(result);
+            }
+        }
+        
     });
 }
 
