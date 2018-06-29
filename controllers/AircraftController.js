@@ -105,57 +105,57 @@ AircraftController.readJSON = function (req, res) {
 }
 
 AircraftController.holodata = function (req, res) {
-
-    var schema = {
-        flight : "ABCDEF",
-        first_time : "06-29-2018 16:35:00",
-        lastest_time : "06-29-2018 16:35:05",
-        points : [
-            {
-                lat : 13.00,
-                lon : 100.00,
-                altitude : 18000,
-                speed : 400,
-                time : "06-29-2018 16:35:00"
-            },
-            {
-                lat : 13.00,
-                lon : 100.00,
-                altitude : 18000,
-                speed : 400,
-                time : "06-29-2018 16:35:01"
-            },
-            {
-                lat : 13.00,
-                lon : 100.00,
-                altitude : 18000,
-                speed : 400,
-                time : "06-29-2018 16:35:02"
-            },
-            {
-                lat : 13.00,
-                lon : 100.00,
-                altitude : 18000,
-                speed : 400,
-                time : "06-29-2018 16:35:03"
-            },
-            {
-                lat : 13.00,
-                lon : 100.00,
-                altitude : 18000,
-                speed : 400,
-                time : "06-29-2018 16:35:04"
-            },
-            {
-                lat : 13.00,
-                lon : 100.00,
-                altitude : 18000,
-                speed : 400,
-                time : "06-29-2018 16:35:05"
+    var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00").valueOf();
+    var tomorrow = (moment(date).valueOf()/1000)+86399;
+    var schema = [];
+    Aircraft.find({unixtime : {$gte : moment(date).valueOf()/1000, $lte : tomorrow}}).exec(function(err,result){
+        
+        var j=0,i=0,check = true;
+        for(i =0;i<result.length;i++){
+            j=0;
+            check=true;
+            for(j=0;j<schema.length;j++){
+                if(result[i].flight == schema[j].flight){
+                    check = false;
+                    break;
+                }
             }
-        ]
-    }
-    res.json(schema);
+            if(j==schema.length && check == true){
+                schema.push({
+                    flight : result[i].flight,
+                    first_time : result[i].date,
+                    lastest_time : result[i].date,
+                    points : [
+                        {
+                            lat : result[i].lat,
+                            lon : result[i].lon,
+                            altitude : result[i].altitude,
+                            speed : result[i].speed,
+                            time : result[i].date
+                        }
+                    ]
+                });
+            }
+        }
+        for(var m=0;m<schema.length;m++){
+            for(var n=0;n<result.length;n++){
+                if(schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date){
+                    schema[m].lastest_time = result[n].date;
+                    schema[m].points.push({
+                        lat : result[n].lat,
+                        lon : result[n].lon,
+                        altitude : result[n].altitude,
+                        speed : result[n].speed,
+                        time : result[n].date
+                    })
+                }
+            }
+        }
+
+
+        res.json(schema);
+    });
+
 }
 
 AircraftController.home = function (req, res) {
