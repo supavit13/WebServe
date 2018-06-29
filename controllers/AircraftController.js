@@ -19,7 +19,7 @@ function createNew(json){
     var schema = {};
     Hololens.find({date : date }).exec(function(err , result){
         if(err) res.send(err);
-        else if(result == null){
+        else if(result.data == null){
             var schema = {
                 date : date,
                 data : [
@@ -47,7 +47,7 @@ function createNew(json){
             });
 
         }
-        else{
+        else {
             var schema = {
                 lat : json.lat,
                 lon : json.lon,
