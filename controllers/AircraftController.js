@@ -83,7 +83,7 @@ AircraftController.putdata = function (req, res) {
         tempData = jsonData;
     }
     jsonData = [];
-    for (var i = 0; i < 4; i++) {
+    for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
         createAircraft(data[i], data[i]['node_number']);
     }
