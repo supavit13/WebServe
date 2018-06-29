@@ -40,48 +40,48 @@ function createAircraft(json, no) {
         date: date
     };
     //filter
-    if (no == 1) {
-        Node1.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
-            if (err) console.log("Error:", err);
-            else if (result == null) {
-                var newNode1 = new Node1(schema);
-                newNode1.save(function (err) {
-                    if (err) console.log("Error:", err);
-                    else console.log("insert " + schema.flight + " " + schema.altitude + " Node1 successful at " + date);
-                });
-            } else {
-                if (result.lat != schema.lat) {
-                    var newNode1 = new Node1(schema);
-                    newNode1.save(function (err) {
-                        if (err) console.log("Error:", err);
-                        else console.log("insert " + schema.flight + " " + schema.altitude + " Node1 successful at " + date);
-                    });
+    // if (no == 1) {
+    //     Node1.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
+    //         if (err) console.log("Error:", err);
+    //         else if (result == null) {
+    //             var newNode1 = new Node1(schema);
+    //             newNode1.save(function (err) {
+    //                 if (err) console.log("Error:", err);
+    //                 else console.log("insert " + schema.flight + " " + schema.altitude + " Node1 successful at " + date);
+    //             });
+    //         } else {
+    //             if (result.lat != schema.lat) {
+    //                 var newNode1 = new Node1(schema);
+    //                 newNode1.save(function (err) {
+    //                     if (err) console.log("Error:", err);
+    //                     else console.log("insert " + schema.flight + " " + schema.altitude + " Node1 successful at " + date);
+    //                 });
 
-                }
-            }
-        });
-    }
-    if (no == 2) {
-        Node2.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
-            if (err) console.log("Error:", err);
-            else if (result == null) {
-                var newNode2 = new Node2(schema);
-                newNode2.save(function (err) {
-                    if (err) console.log("Error:", err);
-                    else console.log("insert " + schema.flight + " " + schema.altitude + " Node2 successful at " + date);
-                });
-            } else {
-                if (result.lat != schema.lat) {
-                    var newNode2 = new Node2(schema);
-                    newNode2.save(function (err) {
-                        if (err) console.log("Error:", err);
-                        else console.log("insert " + schema.flight + " " + schema.altitude + " Node2 successful at " + date);
-                    });
+    //             }
+    //         }
+    //     });
+    // }
+    // if (no == 2) {
+    //     Node2.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
+    //         if (err) console.log("Error:", err);
+    //         else if (result == null) {
+    //             var newNode2 = new Node2(schema);
+    //             newNode2.save(function (err) {
+    //                 if (err) console.log("Error:", err);
+    //                 else console.log("insert " + schema.flight + " " + schema.altitude + " Node2 successful at " + date);
+    //             });
+    //         } else {
+    //             if (result.lat != schema.lat) {
+    //                 var newNode2 = new Node2(schema);
+    //                 newNode2.save(function (err) {
+    //                     if (err) console.log("Error:", err);
+    //                     else console.log("insert " + schema.flight + " " + schema.altitude + " Node2 successful at " + date);
+    //                 });
 
-                }
-            }
-        });
-    }
+    //             }
+    //         }
+    //     });
+    // }
 
     Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
         if (err) console.log("Error:", err);
@@ -99,7 +99,7 @@ function createAircraft(json, no) {
                     if (err) console.log("Error:", err);
                     else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
                 });
-            } else if (result.lat == schema.lat && result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
+            } else if (result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
                 console.log("update to minimum");
                 Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
                 console.log("update minimum time");
@@ -115,11 +115,14 @@ AircraftController.adsbData = function (msg) {
 
 }
 AircraftController.putdata = function (req, res) {
+    var prev = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
     var data = req.body;
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
         createAircraft(data[i], data[i]['node_number']);
     }
+    var curr = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
+    console.log(curr - prev);
     res.sendStatus(200);
 }
 
