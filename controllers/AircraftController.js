@@ -104,6 +104,60 @@ AircraftController.readJSON = function (req, res) {
     }
 }
 
+AircraftController.holodata = function (req, res) {
+
+    var schema = {
+        flight : "ABCDEF",
+        ftime : "06-29-2018 16:35:00",
+        ltime : "06-29-2018 16:35:10",
+        points : [
+            {
+                lat : 13.00,
+                lon : 100.00,
+                altitude : 18000,
+                speed : 400,
+                time : "06-29-2018 16:35:00"
+            },
+            {
+                lat : 13.00,
+                lon : 100.00,
+                altitude : 18000,
+                speed : 400,
+                time : "06-29-2018 16:35:01"
+            },
+            {
+                lat : 13.00,
+                lon : 100.00,
+                altitude : 18000,
+                speed : 400,
+                time : "06-29-2018 16:35:02"
+            },
+            {
+                lat : 13.00,
+                lon : 100.00,
+                altitude : 18000,
+                speed : 400,
+                time : "06-29-2018 16:35:03"
+            },
+            {
+                lat : 13.00,
+                lon : 100.00,
+                altitude : 18000,
+                speed : 400,
+                time : "06-29-2018 16:35:04"
+            },
+            {
+                lat : 13.00,
+                lon : 100.00,
+                altitude : 18000,
+                speed : 400,
+                time : "06-29-2018 16:35:05"
+            }
+        ]
+    }
+    res.json(schema);
+}
+
 AircraftController.home = function (req, res) {
     Aircraft.aggregate([{ $group: { _id: "$node_number" } }]).exec(function (err, result) {
         if (err) console.log("Error:", err);
