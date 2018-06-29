@@ -11,7 +11,7 @@ var AircraftController = {};
 
 
 
-
+var jsonData = {};
 function createAircraft(json, no) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
     var str = json.flight;
@@ -87,6 +87,7 @@ function createAircraft(json, no) {
         if (err) console.log("Error:", err);
         else if (result == null) {
             var newAircraft = new Aircraft(schema);
+            jsonData = schema;
             newAircraft.save(function (err) {
                 if (err) console.log("Error:", err);
                 else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
@@ -95,6 +96,7 @@ function createAircraft(json, no) {
             var unixtimes = new Date() / 1000;
             if (result.lat != schema.lat) {
                 var newAircraft = new Aircraft(schema);
+                jsonData = schema;
                 newAircraft.save(function (err) {
                     if (err) console.log("Error:", err);
                     else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
@@ -102,6 +104,7 @@ function createAircraft(json, no) {
             } else if (result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
                 console.log("update to minimum");
                 Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
+                jsonData = schema;
                 console.log("update minimum time");
             }
         }
@@ -129,10 +132,10 @@ AircraftController.putdata = function (req, res) {
 }
 
 AircraftController.readJSON = function (req, res) {
-    if (massage[req.params.id] == null) {
-        res.send("Invalid path");
+
+    if (jsonData != null) {
+        res.json(jsonData);
     }
-    res.send(massage[req.params.id]);
 }
 
 AircraftController.home = function (req, res) {
