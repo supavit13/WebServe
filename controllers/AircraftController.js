@@ -108,8 +108,8 @@ AircraftController.holodata = function (req, res) {
 
     var schema = {
         flight : "ABCDEF",
-        ftime : "06-29-2018 16:35:00",
-        ltime : "06-29-2018 16:35:10",
+        first_time : "06-29-2018 16:35:00",
+        lastest_time : "06-29-2018 16:35:05",
         points : [
             {
                 lat : 13.00,
