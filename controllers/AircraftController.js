@@ -2,6 +2,7 @@ var mongoose = require("mongoose");
 var Aircraft = require("../models/Aircraft");
 var Node1 = require("../models/Node1");
 var Node2 = require("../models/Node2");
+var Hololens = require("../models/Hololens");
 var moment = require('moment-timezone');
 var url = require('url');
 var express = require('express');
@@ -13,6 +14,53 @@ var AircraftController = {};
 
 var jsonData = [];
 var tempData = [];
+function createNew(json){
+    var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD");
+    var schema = {};
+    Hololens.find({date : date }).exec(function(err , result){
+        if(err) res.send(err);
+        else if(result == null){
+            var schema = {
+                date : date,
+                data : [
+                    {
+                        flight: json.flight,
+                        first_time: date,
+                        lastest_time: date,
+                        points: [
+                            {
+                                lat : json.lat,
+                                lon : json.lon,
+                                altitude : json.altitude,
+                                speed : json.speed,
+                                time : date
+                            }
+                        ]
+                    }
+                       
+                ]
+            }
+            var hololens = new Hololens(schema);
+            hololens.save(function (err) {
+                if (err) console.log("Error:", err);
+                else console.log("New data");
+            });
+
+        }
+        else{
+            var schema = {
+                lat : json.lat,
+                lon : json.lon,
+                altitude : json.altitude,
+                speed : json.speed,
+                time : date
+            }
+            Hololens.update({date:date, "data.flight" : json.flight},{lastest_time : date,$push : {"data.$.points": {schema} } });
+            console.log("update complete!!");
+
+        }
+    })
+}
 function createAircraft(json, no) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
     var str = json.flight;
@@ -86,7 +134,8 @@ AircraftController.putdata = function (req, res) {
     jsonData = [];
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
-        createAircraft(data[i], data[i]['node_number']);
+        createNew(data[i]);
+        // createAircraft(data[i], data[i]['node_number']);
         // Aircraft.insertMany(jsonData);
     }
     var curr = new Date() / 1000;
@@ -218,6 +267,7 @@ AircraftController.getdata = function (req, res) {
         
     });
 }
+
 
 AircraftController.comparetime = function (req, res) {
 
