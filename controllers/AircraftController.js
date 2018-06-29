@@ -106,7 +106,7 @@ function createAircraft(json, no) {
                 console.log("update to minimum");
                 Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
                 jsonData.push(schema);
-                console.log("update minimum time");
+                console.log("update " + schema.flight + " dbtime :" + result.unixtime +" adsb :"+schema.unixtime+ " adsb - now :" + schema.unixtime - unixtimes);
             }
         }
     });
@@ -122,7 +122,7 @@ AircraftController.putdata = function (req, res) {
     var prev = new Date() / 1000;
     console.log(prev)
     var data = req.body;
-    if(jsonData != []){
+    if(jsonData.length > 0){
         tempData = jsonData;
     }
     jsonData = [];
@@ -138,7 +138,7 @@ AircraftController.putdata = function (req, res) {
 
 AircraftController.readJSON = function (req, res) {
 
-    if (jsonData != []) {
+    if (jsonData.length > 0) {
         res.json(jsonData);
     }else{
         res.json(tempData);
