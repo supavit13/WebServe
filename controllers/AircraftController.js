@@ -115,14 +115,14 @@ AircraftController.adsbData = function (msg) {
 
 }
 AircraftController.putdata = function (req, res) {
-    var prev = Math.floor(new Date() / 1000);
+    var prev = new Date() / 1000;
     console.log(prev)
     var data = req.body;
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
         createAircraft(data[i], data[i]['node_number']);
     }
-    var curr = Math.floor(new Date() / 1000);
+    var curr = new Date() / 1000;
     console.log(curr)
     console.log(parseFloat(curr) - parseFloat(prev));
     res.sendStatus(200);
