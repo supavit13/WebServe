@@ -116,11 +116,13 @@ AircraftController.adsbData = function (msg) {
 }
 AircraftController.putdata = function (req, res) {
     var prev = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
+    console.log(prev)
     var data = req.body;
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
         createAircraft(data[i], data[i]['node_number']);
     }
+    console.log(curr)
     var curr = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
     console.log(parseFloat(curr) - parseFloat(prev));
     res.sendStatus(200);
