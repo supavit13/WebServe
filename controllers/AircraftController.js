@@ -12,7 +12,7 @@ var AircraftController = {};
 
 
 var jsonData = [];
-
+var tempData = [];
 function createAircraft(json, no) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
     var str = json.flight;
@@ -122,7 +122,9 @@ AircraftController.putdata = function (req, res) {
     var prev = new Date() / 1000;
     console.log(prev)
     var data = req.body;
-
+    if(jsonData.length > 0){
+        tempData = jsonData;
+    }
     jsonData = [];
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
@@ -138,6 +140,8 @@ AircraftController.readJSON = function (req, res) {
 
     if (jsonData.length > 0) {
         res.json(jsonData);
+    }else{
+        res.json(tempData);
     }
 }
 
