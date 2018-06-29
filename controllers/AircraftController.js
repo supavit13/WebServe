@@ -122,7 +122,7 @@ AircraftController.putdata = function (req, res) {
         createAircraft(data[i], data[i]['node_number']);
     }
     var curr = moment(new Date(Date.now())).tz("Asia/Bangkok").format("X");
-    console.log(curr - prev);
+    console.log(parseFloat(curr) - parseFloat(prev));
     res.sendStatus(200);
 }
 
