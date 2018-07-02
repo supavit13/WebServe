@@ -140,7 +140,7 @@ AircraftController.putdata = function (req, res) {
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
         // createNew(data[i]);
-        // createAircraft(data[i], data[i]['node_number']);
+        createAircraft(data[i], data[i]['node_number']);
         // Aircraft.insertMany(jsonData);
     }
     var curr = new Date() / 1000;
