@@ -160,7 +160,7 @@ AircraftController.readJSON = function (req, res) {
 
 AircraftController.holodata = function (req, res) {
     var date = new Date() / 1000;
-    var before = date-3600;
+    var before = date-60;
     var schema = [];
     console.log("date : "+date.toString());
     console.log("before : "+before.toString());
