@@ -159,6 +159,7 @@ AircraftController.readJSON = function (req, res) {
 }
 
 AircraftController.holodata = function (req, res) {
+    console.log(req.body);
     if(req.body.key == "admim" && req.body.secret == "admin"){
         res.json({msg : "Hello Admin"});
     }
