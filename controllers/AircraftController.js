@@ -161,7 +161,7 @@ AircraftController.readJSON = function (req, res) {
 AircraftController.holodata = function (req, res) {
     console.log(req.body);
     if(req.body.key == 'admin'){
-        res.send("Hi Administrator");
+        res.json({msg : "Hello World"});
     }
     var date = new Date() / 1000;
     var before = date-20;
