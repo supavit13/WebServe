@@ -164,7 +164,7 @@ AircraftController.holodata = function (req, res) {
     var schema = [];
     console.log("date : "+date.toString());
     console.log("before : "+before.toString());
-    Aircraft.find({unixtime : {$gte : before, $lte : date}}).sort({ unixtime : -1}).exec(function(err,result){
+    Aircraft.find({unixtime : {$gte : before, $lte : date}}).sort({ unixtime : 1}).exec(function(err,result){
         
         var j=0,i=0,check = true;
         for(i =0;i<result.length;i++){
