@@ -162,6 +162,8 @@ AircraftController.holodata = function (req, res) {
     var date = new Date() / 1000;
     var before = date-3600;
     var schema = [];
+    console.log("date : "+date.toString());
+    console.log("before : "+before.toString());
     Aircraft.find({unixtime : {$gte : before, $lte : date}}).exec(function(err,result){
         
         var j=0,i=0,check = true;
