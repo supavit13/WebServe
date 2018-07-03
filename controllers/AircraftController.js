@@ -159,10 +159,10 @@ AircraftController.readJSON = function (req, res) {
 }
 
 AircraftController.holodata = function (req, res) {
-    var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD hh:mm:ss").valueOf();
-    var before = (moment(date).valueOf()/1000)-3600;
+    var date = new Date() / 1000;
+    var before = date-3600;
     var schema = [];
-    Aircraft.find({unixtime : {$gte : before, $lte : moment(date).valueOf()/1000}}).exec(function(err,result){
+    Aircraft.find({unixtime : {$gte : before, $lte : date}}).exec(function(err,result){
         
         var j=0,i=0,check = true;
         for(i =0;i<result.length;i++){
