@@ -159,6 +159,9 @@ AircraftController.readJSON = function (req, res) {
 }
 
 AircraftController.holodata = function (req, res) {
+    if(req.body.key == "admim" && req.body.secret == "admin"){
+        res.json({msg : "Hello Admin"});
+    }
     var date = new Date() / 1000;
     var before = date-20;
     var schema = [];

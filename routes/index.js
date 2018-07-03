@@ -22,6 +22,9 @@ router.get('/holodata', function(req, res, next) {
   AircraftController.holodata(req,res);
   
 });
+router.post('/holodata', function(req, res, next) {
+  AircraftController.holodata(req,res);
+});
 router.get('/compare/:flight', function(req, res, next) {
   AircraftController.comparetime(req,res);
   // res.send(req.query.node);
