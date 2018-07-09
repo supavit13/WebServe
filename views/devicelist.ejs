@@ -1,0 +1,45 @@
+<% include head.ejs %>
+
+  <body>
+    <h1>
+      Device list
+    </h1>
+    <button class="btn"><a href="/">Back</a></button>
+    
+    <table id="example" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>key</th>
+                <th>secret</th>
+                <th>discription</th>
+                <th>date</th>
+                
+            </tr>
+        </thead>
+        <tbody class="tabody">
+            
+        </tbody>
+    </table>
+
+  </body>
+  <script>
+        var json = '<%- JSON.stringify(device) %>'
+        console.log(json);
+        json = JSON.parse(json);
+        var str="";
+        for(var i=0;i<json.length;i++){
+            str += "<tr>"+
+                    "<td>" + json[i].name + "</td>"+
+                    "<td>" + json[i].key + "</td>"+
+                    "<td>" + json[i]._id + "</td>"+
+                    "<td>" + json[i].discription + "</td>"+
+                    "<td>" + json[i].date + "</td>"+
+                "</tr>";
+        }
+        $(".tabody").append(str);
+    </script>
+  
+
+
+  </html>

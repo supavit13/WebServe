@@ -17,7 +17,6 @@ var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
 
 var udp = require('dgram');
-var UDPserver = udp.createSocket('udp4');
 var bodyParser = require('body-parser')
 
 
@@ -62,28 +61,7 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-UDPserver.on('listening', function () {
-  var address = UDPserver.address();
-  console.log('UDP Server listening on ' + address.address + ":" + address.port);
-});
-
-var msg = "";
-UDPserver.on('message', function (message, remote) {
-  var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
-  if (message != null) {
-      console.log("massage " + " from " + remote + " "+ date);
-      msg = message;
-      console.log("data is " + msg.toString('utf8'));
-      var json = JSON.parse(msg.toString('utf8'));
-      if(json.flight != null){
-        AircraftController.adsbData(json);
-      }
-      
-  }
-});
-
 // UDPserver.bind(process.argv[2].split(':')[0],parseInt(process.argv[2].split(':')[1]));
-UDPserver.bind(6000);
 
 
 module.exports = app;

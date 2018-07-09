@@ -1,0 +1,38 @@
+<% include head.ejs %>
+
+  <body>
+    <h1>
+      Device register
+    </h1>
+    <button class="btn"><a href="/">Back</a></button>
+    <p> Device name :
+      <input id="name" type="text"> </p><br>
+      <p> Discription :</p>
+          <p><textarea id="discription"> </textarea></p><br>
+      <button class="btn" onclick="create()">Submit</button>
+
+  </body>
+  <script>
+    function create(){
+      var name = $('#name').val();
+      var discription = $('#discription').val();
+      $.ajax({
+        type : 'POST',
+        url : '/create',
+        data : {
+          '_token': $('input[name=_token]').val(),
+          'name' : name,
+          'discription' : discription
+        },
+        success: function(data){
+          alert(data);
+          if(data == 'complete'){
+            window.location.replace('/');
+          }
+        }
+      });
+    }
+  </script>
+
+
+  </html>

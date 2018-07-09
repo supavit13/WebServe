@@ -3,10 +3,12 @@ var Aircraft = require("../models/Aircraft");
 var Node1 = require("../models/Node1");
 var Node2 = require("../models/Node2");
 var Hololens = require("../models/Hololens");
+var Device = require("../models/Device");
 var moment = require('moment-timezone');
 var url = require('url');
 var express = require('express');
 var request = require('request-promise');
+var backup = require('mongodb-backup');
 var router = express.Router();
 var AircraftController = {};
 
@@ -215,6 +217,79 @@ AircraftController.holodata = function (req, res) {
 
 }
 
+AircraftController.postholodata = function (req, res) {
+
+    console.log(req.body.auth);
+    var date = new Date() / 1000;
+    var before = date-20;
+    var schema = [];
+    console.log("date : "+date.toString());
+    console.log("before : "+before.toString());
+    if(req.body.auth == null){
+        res.sendStatus(401);
+    }else{
+        var key = req.body.auth.split('@')[0];
+        var secret = req.body.auth.split('@')[1];
+        Device.findOne({_id : secret , key : key}).exec(function(err,result){
+            if(err) console.log(err);
+            else if(result == null){
+                res.sendStatus(401);
+            }else{
+                Aircraft.find({unixtime : {$gte : before, $lte : date}}).sort({ unixtime : 1}).exec(function(err,result){
+        
+                    var j=0,i=0,check = true;
+                    for(i =0;i<result.length;i++){
+                        j=0;
+                        check=true;
+                        for(j=0;j<schema.length;j++){
+                            if(result[i].flight == schema[j].flight){
+                                check = false;
+                                break;
+                            }
+                        }
+                        if(j==schema.length && check == true){
+                            schema.push({
+                                flight : result[i].flight,
+                                first_time : result[i].date,
+                                lastest_time : result[i].date,
+                                points : [
+                                    {
+                                        lat : result[i].lat,
+                                        lon : result[i].lon,
+                                        altitude : result[i].altitude,
+                                        speed : result[i].speed,
+                                        time : result[i].date
+                                    }
+                                ]
+                            });
+                        }
+                    }
+                    for(var m=0;m<schema.length;m++){
+                        for(var n=0;n<result.length;n++){
+                            if(schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date){
+                                schema[m].lastest_time = result[n].date;
+                                schema[m].points.push({
+                                    lat : result[n].lat,
+                                    lon : result[n].lon,
+                                    altitude : result[n].altitude,
+                                    speed : result[n].speed,
+                                    time : result[n].date
+                                })
+                            }
+                        }
+                    }
+            
+            
+                    res.json(schema);
+                });
+            }
+        });
+        
+    }
+    
+
+}
+
 AircraftController.home = function (req, res) {
     Aircraft.aggregate([{ $group: { _id: "$node_number" } }]).exec(function (err, result) {
         if (err) console.log("Error:", err);
@@ -303,5 +378,17 @@ AircraftController.comparetime = function (req, res) {
             });
         }
     });
+}
+
+AircraftController.backup = function (req, res) {
+    var time = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD");
+    backup({
+        uri : 'mongodb://127.0.0.1:27017/adsb',
+        root : '/var/mongodump/dump'+time,
+        collections : ['aircrafts'],
+        parser : 'json'
+    })
+    res.sendStatus(200);
+    
 }
 module.exports = AircraftController;
