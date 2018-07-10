@@ -371,8 +371,8 @@ AircraftController.backup = function (req, res) {
     
     // console.log(arr.length)
     setTimeout(function(){
-        console.log("sleep 1000 ms")
-    },1000);
+        console.log("sleep 5000 ms")
+    },5000);
     // backup({
     //     uri : 'mongodb://127.0.0.1:27017/adsb',
     //     root : '/var/mongodump/dump'+time,
