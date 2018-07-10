@@ -370,19 +370,15 @@ AircraftController.backup = function (req, res) {
     // });
     
     // console.log(arr.length)
-    setTimeout(function(){
-        console.log("sleep 5000 ms")
-    },5000);
     // backup({
     //     uri : 'mongodb://127.0.0.1:27017/adsb',
     //     root : '/var/mongodump/dump'+time,
     //     collections : ['aircrafts'],
     //     parser : 'json'
     // })
-    // console.log('Aircrafts backup successed dump'+time);
-    // Aircraft.remove({}).exec(function(err,result){
-    //     console.log("Aircrafts collection removed");
-    // });
+    Aircraft.remove({}).exec(function(err,result){
+        console.log("Aircrafts collection removed");
+    });
     res.sendStatus(200);
     
 }
