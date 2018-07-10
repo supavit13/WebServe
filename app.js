@@ -24,7 +24,10 @@ mongoose.Promise = global.Promise;
 
 new CronJob('00 00 00 * * *', function() {
   console.log('You will see this message every day');
-  request.get('http://127.0.0.1:8080/backup');
+  setTimeout(function(){
+    console.log("wait for backup time");
+  },60000)
+  // request.get('http://127.0.0.1:8080/backup');
 }, null, true, 'Asia/Bangkok');
 
 // mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware')
