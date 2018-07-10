@@ -351,43 +351,34 @@ AircraftController.getdata = function (req, res) {
     });
 }
 
-
-AircraftController.comparetime = function (req, res) {
-
-    var qry = {};
-    if (req.params.flight != "all") qry.flight = req.params.flight;
-    Aircraft.find(qry).exec(function (err1, result1) {
-        if (err1) res.send(err1);
-        else {
-            Node1.find(qry).exec(function (err2, result2) {
-                if (err2) res.send(err2);
-                else {
-                    Node2.find(qry).exec(function (err3, result3) {
-                        if (err3) res.send(err3);
-                        else {
-                            var min = Math.min(result1.length, Math.min(result2.length, result3.length));
-                            for (var i = 0; i < min; i++) {
-                                result1[i].unixtime = moment(result1[i].unixtime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
-                                result2[i].unixtime = moment(result2[i].unixtime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
-                                result3[i].unixtime = moment(result3[i].unixtime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
-                            }
-                            res.render('compare', { node1: result2, node2: result3, filter: result1, min: min });
-                        }
-                    });
-                }
-            });
-        }
-    });
-}
-
 AircraftController.backup = function (req, res) {
     var time = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD");
+    // var Collections = mongoose.model('backup'+time,{});
+    // var newCol = new Collections();
+    // newCol.save()
+    // Collections.remove()
+    // var arr = [];
+    // Aircraft.find({}).exec(function(err,result){
+    //     if(err) console.log(err);
+
+    //     console.log(result)
+    //     // for(var i =0;i<result.length;i++){
+    //     //     arr.push(result[i])
+    //     // }
+    //     Collections.insertMany(result);
+        
+    // });
+    
+    // console.log(arr.length)
     backup({
         uri : 'mongodb://127.0.0.1:27017/adsb',
         root : '/var/mongodump/dump'+time,
         collections : ['aircrafts'],
         parser : 'json'
     })
+    Aircraft.remove({}).exec(function(err,result){
+        console.log("Aircrafts collection removed");
+    });
     res.sendStatus(200);
     
 }

@@ -15,12 +15,17 @@ var mongoose = require('mongoose');
 
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session);
-
-var udp = require('dgram');
-var bodyParser = require('body-parser')
+var request = require('request-promise');
+var bodyParser = require('body-parser');
+var CronJob = require('cron').CronJob;
 
 
 mongoose.Promise = global.Promise;
+
+new CronJob('00 20 13 * * *', function() {
+  console.log('You will see this message every day');
+  request.get('http://127.0.0.1:8080/backup');
+}, null, true, 'Asia/Bangkok');
 
 // mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware')
 mongoose.connect('mongodb://127.0.0.1:27017/adsb')

@@ -26,10 +26,7 @@ router.get('/holodata', function(req, res, next) {
 router.post('/postholodata', function(req, res, next) {
   AircraftController.postholodata(req,res);
 });
-router.get('/compare/:flight', function(req, res, next) {
-  AircraftController.comparetime(req,res);
-  // res.send(req.query.node);
-});
+
 router.get('/backup', function(req, res, next) {
   AircraftController.backup(req,res);
 });
