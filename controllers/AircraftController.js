@@ -376,6 +376,7 @@ AircraftController.backup = function (req, res) {
         collections : ['aircrafts'],
         parser : 'json'
     })
+    console.log('Aircrafts backup successed dump'+time);
     Aircraft.remove({}).exec(function(err,result){
         console.log("Aircrafts collection removed");
     });
