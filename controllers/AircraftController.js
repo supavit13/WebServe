@@ -370,12 +370,12 @@ AircraftController.backup = function (req, res) {
     // });
     
     // console.log(arr.length)
-    // backup({
-    //     uri : 'mongodb://127.0.0.1:27017/adsb',
-    //     root : '/var/mongodump/dump'+time,
-    //     collections : ['aircrafts'],
-    //     parser : 'json'
-    // })
+    backup({
+        uri : 'mongodb://127.0.0.1:27017/adsb',
+        root : '/var/mongodump/dump'+time,
+        collections : ['aircrafts'],
+        parser : 'json'
+    })
     Aircraft.remove({}).exec(function(err,result){
         console.log("Aircrafts collection removed");
     });
