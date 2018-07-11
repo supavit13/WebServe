@@ -223,7 +223,7 @@ AircraftController.holodata = function (req, res) {
             flight.push(schema[m].flight);
         }
 
-        Aircraft.find({ flight : {$in : flight} , unixtime : { $gte : today , $lt : before} },function(err,result1){
+        Aircraft.find({ flight : {$in : flight} , unixtime : { $gte : before-3600 , $lt : before} },function(err,result1){
             if (err) throw err;
             var points = [];
             // console.log(result1);
