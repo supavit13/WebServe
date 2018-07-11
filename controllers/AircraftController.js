@@ -226,22 +226,28 @@ AircraftController.holodata = function (req, res) {
         Aircraft.find({ flight : {$in : flight} , unixtime : { $gte : today , $lt : before} },function(err,result1){
             if (err) throw err;
             var points = [];
-            console.log(result1);
-            // for(var n =0 ; n<result1.length;n++){
-            //     points.push({
-            //         lat : result1[n].lat,
-            //         lon : result1[n].lon,
-            //         altitude : result1[n].altitude,
-            //         speed : result1[n].speed,
-            //         time : result1[n].date
-            //     });
-            // }
-
+            // console.log(result1);
+            for(var m=0;m<schema.length;m++){
+                for(var n =0 ; n<result1.length;n++){
+                    if(schema[m].flight == result1[n].flight){
+                        points.push({
+                            lat : result1[n].lat,
+                            lon : result1[n].lon,
+                            altitude : result1[n].altitude,
+                            speed : result1[n].speed,
+                            time : result1[n].date
+                        });
+                    }
+                }
+                schema[m].points.unshift(points);
+            }
+            
+            res.json(schema);
         });
 
 
 
-        res.json(schema);
+        
     });
 
 }
