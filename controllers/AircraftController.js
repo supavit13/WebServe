@@ -16,30 +16,30 @@ var AircraftController = {};
 
 var jsonData = [];
 var tempData = [];
-function createNew(json){
+function createNew(json) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD");
     var schema = {};
-    Hololens.findOne({date : date }).exec(function(err , result){
-        if(err) res.send(err);
-        else if(result.data == null){
+    Hololens.findOne({ date: date }).exec(function (err, result) {
+        if (err) res.send(err);
+        else if (result.data == null) {
             var schema = {
-                date : date,
-                data : [
+                date: date,
+                data: [
                     {
                         flight: json.flight,
                         first_time: date,
                         lastest_time: date,
                         points: [
                             {
-                                lat : json.lat,
-                                lon : json.lon,
-                                altitude : json.altitude,
-                                speed : json.speed,
-                                time : date
+                                lat: json.lat,
+                                lon: json.lon,
+                                altitude: json.altitude,
+                                speed: json.speed,
+                                time: date
                             }
                         ]
                     }
-                       
+
                 ]
             }
             var hololens = new Hololens(schema);
@@ -51,19 +51,19 @@ function createNew(json){
         }
         else {
             var schema = {
-                lat : json.lat,
-                lon : json.lon,
-                altitude : json.altitude,
-                speed : json.speed,
-                time : date
+                lat: json.lat,
+                lon: json.lon,
+                altitude: json.altitude,
+                speed: json.speed,
+                time: date
             }
-            Hololens.update({date:date, "data.flight" : json.flight},{lastest_time : date,$push : {"data.$.points": {schema} } },function(err , result){
-                if(err) console.log(err);
-                else{
+            Hololens.update({ date: date, "data.flight": json.flight }, { lastest_time: date, $push: { "data.$.points": { schema } } }, function (err, result) {
+                if (err) console.log(err);
+                else {
                     console.log("update complete!!");
                 }
             });
-            
+
 
         }
     })
@@ -95,10 +95,10 @@ function createAircraft(json, no) {
         unixtime: json.unixtime,
         date: date
     };
-   
+
     Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
         if (err) console.log("Error:", err);
-        else if(schema.flight == ""){
+        else if (schema.flight == "" || schema.flight == "????????") {
             console.log("skip flight name is null");
         }
         else if (result == null) {
@@ -121,7 +121,7 @@ function createAircraft(json, no) {
                 console.log("update to minimum");
                 Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
                 jsonData.push(schema);
-                console.log("update " + schema.flight + " dbtime :" + result.unixtime.toString() +" adsb :"+schema.unixtime.toString()+ " adsb - now :" + (schema.unixtime - unixtimes).toString());
+                console.log("update " + schema.flight + " dbtime :" + result.unixtime.toString() + " adsb :" + schema.unixtime.toString() + " adsb - now :" + (schema.unixtime - unixtimes).toString());
             }
         }
     });
@@ -131,17 +131,17 @@ function createAircraft(json, no) {
 
 
 AircraftController.adsbData = function (msg) {
-    if(msg.flight.trim() != "" && msg.flight.trim() != "????????"){
+    if (msg.flight.trim() != "" && msg.flight.trim() != "????????") {
         createAircraft(msg, msg['node_number']);
     }
-    
+
 
 }
 AircraftController.putdata = function (req, res) {
     var prev = new Date() / 1000;
     console.log(prev)
-    var data = req.body;
-    if(jsonData.length > 0){
+    var data = req.body.data;
+    if (jsonData.length > 0) {
         tempData = jsonData;
     }
     jsonData = [];
@@ -161,7 +161,7 @@ AircraftController.readJSON = function (req, res) {
 
     if (jsonData.length > 0) {
         res.json(jsonData);
-    }else{
+    } else {
         res.json(tempData);
     }
 }
@@ -169,159 +169,146 @@ AircraftController.readJSON = function (req, res) {
 AircraftController.holodata = function (req, res) {
     console.log(req.body);
     var today = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00").valueOf();
-    today = moment(today).format('x')/1000;
+    today = moment(today).format('x') / 1000;
     var date = new Date() / 1000;
-    var before = date-20;
+    var before = date - 20;
     var schema = [];
-    console.log("date : "+date.toString());
-    console.log("before : "+before.toString());
-    Aircraft.find({unixtime : {$gte : before, $lte : date}}).sort({ unixtime : 1}).exec(function(err,result){
-        
-        var j=0,i=0,check = true;
-        for(i =0;i<result.length;i++){
-            j=0;
-            check=true;
-            for(j=0;j<schema.length;j++){
-                if(result[i].flight == schema[j].flight){
+    console.log("date : " + date.toString());
+    console.log("before : " + before.toString());
+    Aircraft.find({ unixtime: { $gte: before, $lte: date } }).sort({ unixtime: 1 }).exec(function (err, result) {
+
+        var j = 0, i = 0, check = true;
+        for (i = 0; i < result.length; i++) {
+            j = 0;
+            check = true;
+            for (j = 0; j < schema.length; j++) {
+                if (result[i].flight == schema[j].flight) {
                     check = false;
                     break;
                 }
             }
-            if(j==schema.length && check == true){
+            if (j == schema.length && check == true) {
                 schema.push({
-                    flight : result[i].flight,
-                    first_time : result[i].date,
-                    lastest_time : result[i].date,
-                    points : [
+                    flight: result[i].flight,
+                    first_time: result[i].date,
+                    lastest_time: result[i].date,
+                    points: [
                         {
-                            lat : result[i].lat,
-                            lon : result[i].lon,
-                            altitude : result[i].altitude,
-                            speed : result[i].speed,
-                            time : result[i].date
+                            lat: result[i].lat,
+                            lon: result[i].lon,
+                            altitude: result[i].altitude,
+                            speed: result[i].speed,
+                            time: result[i].date
                         }
                     ]
                 });
             }
         }
-        for(var m=0;m<schema.length;m++){
-            for(var n=0;n<result.length;n++){
-                if(schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date){
+        for (var m = 0; m < schema.length; m++) {
+            for (var n = 0; n < result.length; n++) {
+                if (schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date) {
                     schema[m].lastest_time = result[n].date;
                     schema[m].points.push({
-                        lat : result[n].lat,
-                        lon : result[n].lon,
-                        altitude : result[n].altitude,
-                        speed : result[n].speed,
-                        time : result[n].date
+                        lat: result[n].lat,
+                        lon: result[n].lon,
+                        altitude: result[n].altitude,
+                        speed: result[n].speed,
+                        time: result[n].date
                     })
                 }
             }
         }
         var flight = [];
-        for(var m =0;m<schema.length;m++){
+        for (var m = 0; m < schema.length; m++) {
             flight.push(schema[m].flight);
         }
 
-        Aircraft.find({ flight : {$in : flight} , unixtime : { $gte : before-40 , $lt : before} },function(err,result1){
+        Aircraft.find({ flight: { $in: flight }, unixtime: { $gte: before - 40, $lt: before } }, function (err, result1) {
             if (err) throw err;
             var points = [];
             // console.log(result1);
-            for(var m=0;m<schema.length;m++){
-                for(var n =0 ; n<result1.length;n++){
-                    if(schema[m].flight == result1[n].flight){
+            for (var m = 0; m < schema.length; m++) {
+                for (var n = 0; n < result1.length; n++) {
+                    if (schema[m].flight == result1[n].flight) {
                         points.push({
-                            lat : result1[n].lat,
-                            lon : result1[n].lon,
-                            altitude : result1[n].altitude,
-                            speed : result1[n].speed,
-                            time : result1[n].date
+                            lat: result1[n].lat,
+                            lon: result1[n].lon,
+                            altitude: result1[n].altitude,
+                            speed: result1[n].speed,
+                            time: result1[n].date
                         });
                     }
                 }
                 schema[m].points.unshift(points);
             }
-            
+
             res.json(schema);
         });
 
 
 
-        
+
     });
 
 }
 
 AircraftController.postholodata = function (req, res) {
 
-    console.log(req.body.auth);
     var date = new Date() / 1000;
-    var before = date-20;
+    var before = date - 20;
     var schema = [];
-    console.log("date : "+date.toString());
-    console.log("before : "+before.toString());
-    if(req.body.auth == null){
-        res.sendStatus(401);
-    }else{
-        var key = req.body.auth.split('@')[0];
-        var secret = req.body.auth.split('@')[1];
-        Device.findOne({_id : secret , key : key}).exec(function(err,result){
-            if(err) console.log(err);
-            else if(result == null){
-                res.sendStatus(401);
-            }else{
-                Aircraft.find({unixtime : {$gte : before, $lte : date}}).sort({ unixtime : 1}).exec(function(err,result){
-        
-                    var j=0,i=0,check = true;
-                    for(i =0;i<result.length;i++){
-                        j=0;
-                        check=true;
-                        for(j=0;j<schema.length;j++){
-                            if(result[i].flight == schema[j].flight){
-                                check = false;
-                                break;
-                            }
+    console.log("date : " + date.toString());
+    console.log("before : " + before.toString());
+
+    Aircraft.find({ unixtime: { $gte: before, $lte: date } }).sort({ unixtime: 1 }).exec(function (err, result) {
+
+        var j = 0, i = 0, check = true;
+        for (i = 0; i < result.length; i++) {
+            j = 0;
+            check = true;
+            for (j = 0; j < schema.length; j++) {
+                if (result[i].flight == schema[j].flight) {
+                    check = false;
+                    break;
+                }
+            }
+            if (j == schema.length && check == true) {
+                schema.push({
+                    flight: result[i].flight,
+                    first_time: result[i].date,
+                    lastest_time: result[i].date,
+                    points: [
+                        {
+                            lat: result[i].lat,
+                            lon: result[i].lon,
+                            altitude: result[i].altitude,
+                            speed: result[i].speed,
+                            time: result[i].date
                         }
-                        if(j==schema.length && check == true){
-                            schema.push({
-                                flight : result[i].flight,
-                                first_time : result[i].date,
-                                lastest_time : result[i].date,
-                                points : [
-                                    {
-                                        lat : result[i].lat,
-                                        lon : result[i].lon,
-                                        altitude : result[i].altitude,
-                                        speed : result[i].speed,
-                                        time : result[i].date
-                                    }
-                                ]
-                            });
-                        }
-                    }
-                    for(var m=0;m<schema.length;m++){
-                        for(var n=0;n<result.length;n++){
-                            if(schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date){
-                                schema[m].lastest_time = result[n].date;
-                                schema[m].points.push({
-                                    lat : result[n].lat,
-                                    lon : result[n].lon,
-                                    altitude : result[n].altitude,
-                                    speed : result[n].speed,
-                                    time : result[n].date
-                                })
-                            }
-                        }
-                    }
-            
-            
-                    res.json(schema);
+                    ]
                 });
             }
-        });
-        
-    }
-    
+        }
+        for (var m = 0; m < schema.length; m++) {
+            for (var n = 0; n < result.length; n++) {
+                if (schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date) {
+                    schema[m].lastest_time = result[n].date;
+                    schema[m].points.push({
+                        lat: result[n].lat,
+                        lon: result[n].lon,
+                        altitude: result[n].altitude,
+                        speed: result[n].speed,
+                        time: result[n].date
+                    })
+                }
+            }
+        }
+
+
+        res.json(schema);
+    });
+
+
 
 }
 
@@ -354,7 +341,7 @@ AircraftController.view = function (req, res) {
         qry.date = { $lte: etime };
     }
     // console.log(qry);
-    Aircraft.find(qry).limit( 1000 ).sort({ unixtime : -1 }).exec(function (err, result) {
+    Aircraft.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) {
         if (err) res.send(err);
         res.render('table', { data: result });
     });
@@ -377,12 +364,12 @@ AircraftController.getdata = function (req, res) {
         qry.date = { $lte: etime };
     }
     // console.log(qry);
-    Aircraft.find(qry).limit( 1000 ).sort({ unixtime : -1 }).exec(function (err, result) { //limit data 1000 records
+    Aircraft.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
         if (err) res.send(err);
-        else{
+        else {
             res.json(result);
         }
-        
+
     });
 }
 
@@ -390,15 +377,15 @@ AircraftController.backup = function (req, res) {
     var time = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD");
 
     backup({
-        uri : 'mongodb://127.0.0.1:27017/adsb',
-        root : '/var/mongodump/dump'+time,
-        collections : ['aircrafts'],
-        parser : 'json'
+        uri: 'mongodb://127.0.0.1:27017/adsb',
+        root: '/var/mongodump/dump' + time,
+        collections: ['aircrafts'],
+        parser: 'json'
     })
-    Aircraft.remove({}).exec(function(err,result){
+    Aircraft.remove({}).exec(function (err, result) {
         console.log("Aircrafts collection removed");
     });
     res.sendStatus(200);
-    
+
 }
 module.exports = AircraftController;
