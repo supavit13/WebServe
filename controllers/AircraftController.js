@@ -187,26 +187,20 @@ AircraftController.holodata = function (req, res) {
                     break;
                 }
             }
-            var points = [];
             if(j==schema.length && check == true){
-
-                Aircraft.find({flight : result[i].flight ,unixtime :{$gte : today , $lte : before}},function(err,result1){
-                    if(err) throw err;
-                    for(var x = 0;x<result1.length;x++){
-                        points.push({
-                            lat : result1[i].lat,
-                            lon : result1[i].lon,
-                            altitude : result1[i].altitude,
-                            speed : result1[i].speed,
-                            time : result1[i].date
-                        });
-                    }
-                });
                 schema.push({
                     flight : result[i].flight,
                     first_time : result[i].date,
                     lastest_time : result[i].date,
-                    points : points
+                    points : [
+                        {
+                            lat : result[i].lat,
+                            lon : result[i].lon,
+                            altitude : result[i].altitude,
+                            speed : result[i].speed,
+                            time : result[i].date
+                        }
+                    ]
                 });
             }
         }
