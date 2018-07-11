@@ -128,7 +128,7 @@ function createAircraft(json, no) {
 
 
 AircraftController.adsbData = function (msg) {
-    if(msg.flight.trim()!= ""){
+    if(msg.flight.trim() != "" && msg.flight.trim() != "????????"){
         createAircraft(msg, msg['node_number']);
     }
     
