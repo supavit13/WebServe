@@ -168,12 +168,14 @@ AircraftController.readJSON = function (req, res) {
 
 AircraftController.holodata = function (req, res) {
     console.log(req.body);
+    var today = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00").valueOf();
+    today = moment(today).format('x')/1000;
     var date = new Date() / 1000;
     var before = date-20;
     var schema = [];
     console.log("date : "+date.toString());
     console.log("before : "+before.toString());
-    Aircraft.find({unixtime : { $lte : date}}).sort({ unixtime : 1}).exec(function(err,result){
+    Aircraft.find({unixtime : {$gte : before, $lte : date}}).sort({ unixtime : 1}).exec(function(err,result){
         
         var j=0,i=0,check = true;
         for(i =0;i<result.length;i++){
@@ -185,20 +187,26 @@ AircraftController.holodata = function (req, res) {
                     break;
                 }
             }
+            var points = [];
             if(j==schema.length && check == true){
+
+                Aircraft.find({flight : result[i].flight ,unixtime :{$gte : today , $lte : before}},function(err,result1){
+                    if(err) throw err;
+                    for(var x = 0;x<result1.length;x++){
+                        points.push({
+                            lat : result1[i].lat,
+                            lon : result1[i].lon,
+                            altitude : result1[i].altitude,
+                            speed : result1[i].speed,
+                            time : result1[i].date
+                        });
+                    }
+                });
                 schema.push({
                     flight : result[i].flight,
                     first_time : result[i].date,
                     lastest_time : result[i].date,
-                    points : [
-                        {
-                            lat : result[i].lat,
-                            lon : result[i].lon,
-                            altitude : result[i].altitude,
-                            speed : result[i].speed,
-                            time : result[i].date
-                        }
-                    ]
+                    points : points
                 });
             }
         }
