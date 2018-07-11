@@ -353,23 +353,7 @@ AircraftController.getdata = function (req, res) {
 
 AircraftController.backup = function (req, res) {
     var time = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD");
-    // var Collections = mongoose.model('backup'+time,{});
-    // var newCol = new Collections();
-    // newCol.save()
-    // Collections.remove()
-    // var arr = [];
-    // Aircraft.find({}).exec(function(err,result){
-    //     if(err) console.log(err);
 
-    //     console.log(result)
-    //     // for(var i =0;i<result.length;i++){
-    //     //     arr.push(result[i])
-    //     // }
-    //     Collections.insertMany(result);
-        
-    // });
-    
-    // console.log(arr.length)
     backup({
         uri : 'mongodb://127.0.0.1:27017/adsb',
         root : '/var/mongodump/dump'+time,

@@ -22,7 +22,7 @@ var CronJob = require('cron').CronJob;
 
 mongoose.Promise = global.Promise;
 
-new CronJob('00 00 00 * * *', function() {
+new CronJob('30 59 23 * * *', function() {
   console.log('You will see this message every day');
   request.get('http://127.0.0.1:8080/backup');
 }, null, true, 'Asia/Bangkok');
