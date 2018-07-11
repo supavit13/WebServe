@@ -192,38 +192,16 @@ AircraftController.holodata = function (req, res) {
                     flight : result[i].flight,
                     first_time : result[i].date,
                     lastest_time : result[i].date,
+                    points : [
+                        {
+                            lat : result[i].lat,
+                            lon : result[i].lon,
+                            altitude : result[i].altitude,
+                            speed : result[i].speed,
+                            time : result[i].date
+                        }
+                    ]
                 });
-                Aircraft.find({flight : result[i].flight , unixtime : {$gte : today , $lte : before}}).sort({ unixtime : 1}).exec(function(err, result1){
-                    if (err) throw err;
-                    console.log(result1.length);
-                    console.log(result1[0].date);
-                    var points = [];
-                    for(var x = 0;x<result1.length;x++){
-                        points.push({
-                            lat : result1[x].lat,
-                            lon : result1[x].lon,
-                            altitude : result1[x].altitude,
-                            speed : result1[x].speed,
-                            time : result1[x].date
-                        })
-                    }
-                    schema[j].points = points;
-                    
-                })
-                // schema.push({
-                //     flight : result[i].flight,
-                //     first_time : result[i].date,
-                //     lastest_time : result[i].date,
-                //     points : [
-                //         {
-                //             lat : result[i].lat,
-                //             lon : result[i].lon,
-                //             altitude : result[i].altitude,
-                //             speed : result[i].speed,
-                //             time : result[i].date
-                //         }
-                //     ]
-                // });
             }
         }
         for(var m=0;m<schema.length;m++){
