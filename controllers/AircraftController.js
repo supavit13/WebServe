@@ -188,6 +188,11 @@ AircraftController.holodata = function (req, res) {
                 }
             }
             if(j==schema.length && check == true){
+                Aircraft.find({flight : result[i].flight , unixtime : {$gte : today}}).sort({ unixtime : 1}).exec(function(err, result1){
+                    if (err) throw err;
+                    console.log(result1.length);
+                    console.log(result1[0].date);
+                })
                 schema.push({
                     flight : result[i].flight,
                     first_time : result[i].date,
