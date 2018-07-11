@@ -197,8 +197,9 @@ AircraftController.holodata = function (req, res) {
                     if (err) throw err;
                     console.log(result1.length);
                     console.log(result1[0].date);
+                    var points = [];
                     for(var x = 0;x<result1.length;x++){
-                        schema[j].points.push({
+                        points.push({
                             lat : result1[x].lat,
                             lon : result1[x].lon,
                             altitude : result1[x].altitude,
@@ -206,6 +207,7 @@ AircraftController.holodata = function (req, res) {
                             time : result1[x].date
                         })
                     }
+                    schema[j].points = points;
                     
                 })
                 // schema.push({
