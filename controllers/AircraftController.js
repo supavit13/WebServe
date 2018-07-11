@@ -98,6 +98,9 @@ function createAircraft(json, no) {
    
     Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
         if (err) console.log("Error:", err);
+        else if(schema.flight == ""){
+            console.log("skip flight name is null");
+        }
         else if (result == null) {
             var newAircraft = new Aircraft(schema);
             jsonData.push(schema);
