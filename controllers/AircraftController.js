@@ -370,8 +370,9 @@ AircraftController.getdata = function (req, res) {
     if(req.params.stime != 'all' && req.params.stime < today ){
         var year = req.params.stime.split('-')[0];
         var month = req.params.stime.split('-')[1];
-        var day = (req.params.stime.split('-')[2]).split(' ')[0];
-        // var Older = mongoose.model('backup',{});
+        var day = (req.params.stime.split('-')[2]).split('T')[0];
+        if(month[0] == '0') month = month[1];
+        if(day[0] == '0') day = day[1];
         console.log(day+month+year);
     }
     // console.log(qry);
