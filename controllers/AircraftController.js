@@ -17,7 +17,7 @@ var AircraftController = {};
 var jsonData = [];
 var tempData = [];
 
-var Older;
+var OlderCollection = {};
 function createNew(json) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD");
     var schema = {};
@@ -378,10 +378,8 @@ AircraftController.getdata = function (req, res) {
         var sday = (req.params.stime.split('-')[2]).split('T')[0];
         if(smonth[0] == '0') smonth = smonth[1];
         if(sday[0] == '0') sday = sday[1];
-        if(Older == null) Older = mongoose.model('backup'+sday+smonth+syear,{});
-        else if(Older != null && Older.modelName != 'backup'+sday+smonth+syear) Older = mongoose.model('backup'+sday+smonth+syear,{});
-        console.log(Older.modelName);
-        Older.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
+        if(!OlderCollection.hasOwnProperty('backup'+sday+smonth+syear)) OlderCollection['backup'+sday+smonth+syear] = mongoose.model('backup'+sday+smonth+syear,{});
+        Older['backup'+sday+smonth+syear].find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
             if (err) throw err;
             else {
                 res.json(result);
@@ -394,10 +392,8 @@ AircraftController.getdata = function (req, res) {
         var eday = (req.params.etime.split('-')[2]).split('T')[0];
         if(emonth[0] == '0') emonth = emonth[1];
         if(eday[0] == '0') eday = eday[1];
-        if(Older == null) Older = mongoose.model('backup'+eday+emonth+eyear,{});
-        else if(Older != null && Older.modelName != 'backup'+eday+emonth+eyear) Older = mongoose.model('backup'+eday+emonth+eyear,{});
-        console.log(Older.modelName);
-        Older.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
+        if(!OlderCollection.hasOwnProperty('backup'+eday+emonth+eyear)) OlderCollection['backup'+eday+emonth+eyear] = mongoose.model('backup'+eday+emonth+eyear,{});
+        OlderCollection['backup'+eday+emonth+eyear].find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
             if (err) throw err;
             else {
                 res.json(result);
