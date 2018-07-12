@@ -398,15 +398,17 @@ AircraftController.getdata = function (req, res) {
             }
     
         });
+    }else{
+        Aircraft.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
+            if (err) throw err;
+            else {
+                res.json(result);
+            }
+
+        });
     }
     // console.log(qry);
-    Aircraft.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
-        if (err) throw err;
-        else {
-            res.json(result);
-        }
-
-    });
+    
 }
 
 AircraftController.older = function (req, res) {
