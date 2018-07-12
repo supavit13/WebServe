@@ -367,18 +367,30 @@ AircraftController.getdata = function (req, res) {
     }
 
     var today = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00");
-    var syear = req.params.stime.split('-')[0];
-    var smonth = req.params.stime.split('-')[1];
-    var sday = (req.params.stime.split('-')[2]).split('T')[0];
-    if(smonth[0] == '0') smonth = smonth[1];
-    if(sday[0] == '0') sday = sday[1];
-    var eyear = req.params.etime.split('-')[0];
-    var emonth = req.params.etime.split('-')[1];
-    var eday = (req.params.etime.split('-')[2]).split('T')[0];
-    if(emonth[0] == '0') emonth = emonth[1];
-    if(eday[0] == '0') eday = eday[1];
+
+    
+    
     if(req.params.stime != 'all' && req.params.stime < today ){
+        var syear = req.params.stime.split('-')[0];
+        var smonth = req.params.stime.split('-')[1];
+        var sday = (req.params.stime.split('-')[2]).split('T')[0];
+        if(smonth[0] == '0') smonth = smonth[1];
+        if(sday[0] == '0') sday = sday[1];
         var Older = mongoose.model('backup'+sday+smonth+syear,{});
+        Older.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
+            if (err) res.send(err);
+            else {
+                res.json(result);
+            }
+    
+        });
+    }else if(req.params.stime == 'all' &&req.params.etime != 'all' && req.params.etime < today){
+        var eyear = req.params.etime.split('-')[0];
+        var emonth = req.params.etime.split('-')[1];
+        var eday = (req.params.etime.split('-')[2]).split('T')[0];
+        if(emonth[0] == '0') emonth = emonth[1];
+        if(eday[0] == '0') eday = eday[1];
+        var Older = mongoose.model('backup'+eday+emonth+eyear,{});
         Older.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
             if (err) res.send(err);
             else {
