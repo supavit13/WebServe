@@ -16,6 +16,8 @@ var AircraftController = {};
 
 var jsonData = [];
 var tempData = [];
+
+var Older;
 function createNew(json) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD");
     var schema = {};
@@ -368,7 +370,7 @@ AircraftController.getdata = function (req, res) {
 
     var today = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00");
 
-    var Older;
+    
     
     if(req.params.stime != 'all' && req.params.stime < today ){
         var syear = req.params.stime.split('-')[0];
@@ -411,15 +413,15 @@ AircraftController.getdata = function (req, res) {
     
 }
 
-AircraftController.older = function (req, res) {
+// AircraftController.older = function (req, res) {
 
-    var Old = mongoose.model('backup1172018',{});
-    Old.find({}).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) {
-        if(err) throw err;
-        res.json(result);
-    });
+//     var Old = mongoose.model('backup1172018',{});
+//     Old.find({}).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) {
+//         if(err) throw err;
+//         res.json(result);
+//     });
     
-}
+// }
 
 AircraftController.backup = function (req, res) {
     var time = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD");
