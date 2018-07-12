@@ -60,5 +60,8 @@ router.get('/devicelist', function(req, res, next) {
 router.post('/create', function(req, res, next) {
   DeviceController.create(req,res);
 });
+router.get('/older', function(req, res, next) {
+  AircraftController.older(req,res);
+});
 
 module.exports = router;
