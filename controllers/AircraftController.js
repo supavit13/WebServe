@@ -365,6 +365,15 @@ AircraftController.getdata = function (req, res) {
         var etime = moment(req.params.etime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
         qry.date = { $lte: etime };
     }
+
+    var today = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00");
+    if(req.params.stime != 'all' && req.params.stime < today ){
+        var year = req.params.stime.split('-')[0];
+        var month = req.params.stime.split('-')[1];
+        var day = (req.params.stime.split('-')[2]).split(' ')[0];
+        // var Older = mongoose.model('backup',{});
+        console.log(day+month+year);
+    }
     // console.log(qry);
     Aircraft.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
         if (err) res.send(err);
