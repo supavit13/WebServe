@@ -370,9 +370,10 @@ AircraftController.getdata = function (req, res) {
 
     var today = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD 00:00:00");
 
+    var twoColl = (moment(etime).tz("Asia/Bangkok").format('x')/1000) - (moment(stime).tz("Asia/Bangkok").format('x')/1000);
+    console.log(twoColl);
     
-    
-    if(req.params.stime != 'all' && req.params.stime < today ){
+    if(req.params.stime != 'all' && req.params.stime < today){
         var syear = req.params.stime.split('-')[0];
         var smonth = req.params.stime.split('-')[1];
         var sday = (req.params.stime.split('-')[2]).split('T')[0];
