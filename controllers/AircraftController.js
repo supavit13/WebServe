@@ -393,6 +393,7 @@ AircraftController.getdata = function (req, res) {
         if(emonth[0] == '0') emonth = emonth[1];
         if(eday[0] == '0') eday = eday[1];
         if(Older == null) Older = mongoose.model('backup'+eday+emonth+eyear,{});
+        console.log(Older);
         Older.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
             if (err) throw err;
             else {
