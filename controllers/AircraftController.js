@@ -392,7 +392,7 @@ AircraftController.getdata = function (req, res) {
         if(eday[0] == '0') eday = eday[1];
         var Older = mongoose.model('backup'+eday+emonth+eyear,{});
         Older.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
-            if (err) res throw err;
+            if (err) throw err;
             else {
                 res.json(result);
             }
@@ -401,7 +401,7 @@ AircraftController.getdata = function (req, res) {
     }
     // console.log(qry);
     Aircraft.find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
-        if (err) res throw err;
+        if (err) throw err;
         else {
             res.json(result);
         }
