@@ -377,8 +377,6 @@ AircraftController.getdata = function (req, res) {
         var syear = req.params.stime.split('-')[0];
         var smonth = req.params.stime.split('-')[1];
         var sday = (req.params.stime.split('-')[2]).split('T')[0];
-        if(smonth[0] == '0') smonth = smonth[1];
-        if(sday[0] == '0') sday = sday[1];
         if(!OlderCollection.hasOwnProperty('backup'+sday+smonth+syear)) OlderCollection['backup'+sday+smonth+syear] = mongoose.model('backup'+sday+smonth+syear,{});
         OlderCollection['backup'+sday+smonth+syear].find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
             if (err) throw err;
@@ -391,8 +389,6 @@ AircraftController.getdata = function (req, res) {
         var eyear = req.params.etime.split('-')[0];
         var emonth = req.params.etime.split('-')[1];
         var eday = (req.params.etime.split('-')[2]).split('T')[0];
-        if(emonth[0] == '0') emonth = emonth[1];
-        if(eday[0] == '0') eday = eday[1];
         if(!OlderCollection.hasOwnProperty('backup'+eday+emonth+eyear)) OlderCollection['backup'+eday+emonth+eyear] = mongoose.model('backup'+eday+emonth+eyear,{});
         OlderCollection['backup'+eday+emonth+eyear].find(qry).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) { //limit data 1000 records
             if (err) throw err;
