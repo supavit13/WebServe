@@ -425,9 +425,9 @@ AircraftController.backup = function (req, res) {
 
     backup({
         uri: 'mongodb://127.0.0.1:27017/adsb',
-        root: '/var/mongodump/dump' + time,
+        root: '/home/adsb/domains/mongodump/dump' + time,
         collections: ['aircrafts'],
-        parser: 'json'
+        parser: 'bson'
     })
     Aircraft.remove({}).exec(function (err, result) {
         console.log("Aircrafts collection removed");
