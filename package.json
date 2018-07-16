@@ -15,6 +15,7 @@
     "ejs": "^2.5.9",
     "express": "^4.16.3",
     "express-session": "^1.15.6",
+    "fs": "0.0.1-security",
     "generate-key": "0.0.6",
     "http-errors": "^1.6.3",
     "moment-timezone": "^0.5.20",

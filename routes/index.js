@@ -60,8 +60,11 @@ router.get('/devicelist', function(req, res, next) {
 router.post('/create', function(req, res, next) {
   DeviceController.create(req,res);
 });
-router.get('/older', function(req, res, next) {
-  AircraftController.older(req,res);
+router.get('/csvlist', function(req, res, next) {
+  AircraftController.csv(req,res);
+});
+router.get('/download/:filename', function(req, res, next) {
+  AircraftController.download(req,res);
 });
 
 module.exports = router;

@@ -9,6 +9,8 @@ var url = require('url');
 var express = require('express');
 var request = require('request-promise');
 var backup = require('mongodb-backup');
+var fs = require('fs');
+var csvpath = '/home/adsb/domains/mongodump/csv';
 var router = express.Router();
 var AircraftController = {};
 
@@ -410,15 +412,18 @@ AircraftController.getdata = function (req, res) {
     
 }
 
-// AircraftController.older = function (req, res) {
-
-//     var Old = mongoose.model('backup1172018',{});
-//     Old.find({}).limit(1000).sort({ unixtime: -1 }).exec(function (err, result) {
-//         if(err) throw err;
-//         res.json(result);
-//     });
+AircraftController.csv = function (req, res) {
+    fs.readdir(csvpath,(err,files) => {
+        if(err) throw err;
+        // console.log(files);
+        res.render('csvlist', {data : files});
+    });
     
-// }
+};
+AircraftController.download = function (req, res) {
+    res.download(csvpath+'/'+req.params.filename);
+    
+};
 
 AircraftController.backup = function (req, res) {
     var time = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD");
