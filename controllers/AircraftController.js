@@ -98,7 +98,7 @@ function createAircraft(json, no) {
         date: date
     };
 
-    Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).exec(function (err, result) {
+    Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon, altitude : json.altitude }).exec(function (err, result) {
         if (err) console.log("Error:", err);
         else if (result == null) {
             var newAircraft = new Aircraft(schema);
@@ -116,7 +116,7 @@ function createAircraft(json, no) {
                     if (err) console.log("Error:", err);
                     else console.log("insert " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
                 });
-            } else if (result.unixtime > schema.unixtime && schema.unixtime - unixtimes <= 5) { //find minimum time
+            } else if (result.unixtime > schema.unixtime && Math.abs(schema.unixtime - unixtimes) <= 5) { //find minimum time
                 console.log("update to minimum");
                 Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon }).update(schema);
                 jsonData.push(schema);
