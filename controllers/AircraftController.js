@@ -174,7 +174,7 @@ AircraftController.readJSON = function (req, res) {
 AircraftController.aircraftdata = function (req, res) {
     var current_time = parseInt(new Date() / 1000);
 
-    Aircraft.find({unixtime : {$gte : current_time, $lte : current_time+1}}).exec(function(err,result){
+    Aircraft.find({unixtime : {$gte : current_time-1}}).exec(function(err,result){
         if(err) throw err;
         res.json(result);
     });
