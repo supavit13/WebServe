@@ -18,6 +18,7 @@ var AircraftController = {};
 
 var jsonData = [];
 var tempData = [];
+var aircraftData = [];
 
 var OlderCollection = {};
 function createNew(json) {
@@ -142,6 +143,7 @@ AircraftController.putdata = function (req, res) {
     var prev = new Date() / 1000;
     console.log(prev)
     var data = req.body.data;
+    aircraftData = data;
     if (jsonData.length > 0) {
         tempData = jsonData;
     }
@@ -169,6 +171,14 @@ AircraftController.readJSON = function (req, res) {
         res.json(jsonData);
     } else {
         res.json(tempData);
+    }
+}
+AircraftController.aircraftdata = function (req, res) {
+
+    if (aircraftData.length > 0) {
+        res.json(aircraftData);
+    } else {
+        res.json(aircraftData);
     }
 }
 

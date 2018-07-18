@@ -30,11 +30,12 @@ router.get('/', function(req, res, next) {
 });
 router.get('/data/:node/:flight/:stime/:etime', function(req, res, next) {
   AircraftController.getdata(req,res);
-  // res.send(req.query.node);
 });
 router.get('/view', function(req, res, next) {
   AircraftController.view(req,res);
-  // res.send(req.query.node);
+});
+router.get('/data/aircraft.json', function(req, res, next) {
+  AircraftController.aircraftdata(req,res);
 });
 router.post('/putdata',authen, function(req, res, next) {
   AircraftController.putdata(req,res);
