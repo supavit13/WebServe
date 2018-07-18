@@ -18,12 +18,25 @@ var MongoStore = require('connect-mongo')(session);
 var request = require('request-promise');
 var bodyParser = require('body-parser');
 var CronJob = require('cron').CronJob;
+var sys = require('util');
+var exec = require('child_process').exec;
+function puts(err,stdout,stderr){console.log(stdout) }
+
 
 
 mongoose.Promise = global.Promise;
 
-new CronJob('00 00 00 * * *', function() {
+new CronJob('59 59 23 * * *', function() {
   console.log('You will see this message every day');
+  var date = new Date();
+  var day = date.getDate().toString();
+  var month = (date.getMonth()+1).toString();
+  var year = date.getFullYear().toString();
+  if(day.length == 1) day = '0'+day;
+  if(month.length == 1) month = '0'+month;
+  var name = "backup"+day+month+year;
+  exec("mongo backup.js",puts);
+  exec("mongoexport --sort '{ unixtime : 1 }' --host localhost --db adsb --collection aircrafts --csv --out /home/adsb/domains/mongodump/csv/"+name+".csv --fields date,unixtime,hex,flight,lat,lon,altitude,speed,track,node_number",puts);
   request.get('http://127.0.0.1:8080/backup');
 }, null, true, 'Asia/Bangkok');
 
