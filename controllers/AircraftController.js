@@ -18,6 +18,8 @@ var AircraftController = {};
 
 var jsonData = [];
 var tempData = [];
+var aircraftData = [];
+var tmpaircraftData = [];
 
 var OlderCollection = {};
 function createNew(json) {
@@ -145,9 +147,11 @@ AircraftController.putdata = function (req, res) {
     if (jsonData.length > 0) {
         tempData = jsonData;
     }
+    
     jsonData = [];
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
+        aircraftData.push(data[i]);
         // createNew(data[i]);
         if (data[i].flight == "" || data[i].flight == "????????") {
             console.log("skip flight name is null");
@@ -156,6 +160,10 @@ AircraftController.putdata = function (req, res) {
         }
         
         // Aircraft.insertMany(jsonData);
+    }
+    if (aircraftData.length > 0 && parseInt(prev)+1 > aircraftData[0].unixtime) {
+        tmpaircraftData = aircraftData;
+        aircraftData = [];
     }
     var curr = new Date() / 1000;
     console.log(curr)
@@ -174,16 +182,20 @@ AircraftController.readJSON = function (req, res) {
 AircraftController.aircraftdata = function (req, res) {
     var current_time = parseInt(new Date() / 1000);
 
-    Aircraft.find({unixtime : {$gte : current_time-1}}).exec(function(err,result){
-        if(err) throw err;
-        res.json(result);
-    });
+    // Aircraft.find({unixtime : {$gte : current_time-1}}).exec(function(err,result){
+    //     if(err) throw err;
+    //     res.json(result);
+    // });
 
-    // if (aircraftData.length > 0) {
-    //     res.json(aircraftData);
-    // } else {
-    //     res.json(aircraftData);
-    // }
+    if (aircraftData.length > 0) {
+        if(current_time > aircraftData[0].unixtime){
+            tmpaircraftData = aircraftData;
+            aircraftData = [];
+        }
+        res.json(tmpaircraftData);
+    } else {
+        res.json(tmpaircraftData);
+    }
 }
 
 AircraftController.holodata = function (req, res) {
