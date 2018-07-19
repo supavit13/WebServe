@@ -206,7 +206,7 @@ function mergedata(json){
 setInterval(function(){
     aircraftData = [];
     var timenow = new Date() /1000;
-    fs.readdir("/home/adsb/domains/mongodump/json",'utf8',function(err,files){
+    fs.readdir("/home/adsb/domains/mongodump/json",(err,files) =>{
         if(err) throw err;
         files.forEach(element => {
             fs.readFile("/home/adsb/domains/mongodump/json/"+element,function(err1,data){
