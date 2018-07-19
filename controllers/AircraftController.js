@@ -210,12 +210,18 @@ setInterval(function(){
         if(err) throw err;
         files.forEach(element => {
             fs.readFile("/home/adsb/domains/mongodump/json/"+element,function(err1,data){
-                var json = JSON.parse(data);
-                if(Math.abs(timenow - json[0].unixtime)  > 30){
-                    
+                if(err1) throw err1;
+                else if(data == null){
+
                 }else{
-                    mergedata(json);
+                    var json = JSON.parse(data);
+                    if(Math.abs(timenow - json[0].unixtime)  > 30){
+                        
+                    }else{
+                        mergedata(json);
+                    }
                 }
+                
                 
             });
         });
