@@ -209,7 +209,7 @@ setInterval(function(){
     fs.readdir("/home/adsb/domains/mongodump/json",(err,files) =>{
         if(err) throw err;
         files.forEach(element => {
-            fs.readFile("/home/adsb/domains/mongodump/json/"+element,function(err1,data){
+            fs.readFileSync("/home/adsb/domains/mongodump/json/"+element,function(err1,data){
                 if(err1) throw err1;
                 else if(data == null){
 
