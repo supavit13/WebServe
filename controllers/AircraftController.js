@@ -214,12 +214,17 @@ setInterval(function(){
                 else if(data == null){
 
                 }else{
-                    var json = JSON.parse(data);
-                    if(Math.abs(timenow - json[0].unixtime)  > 30){
-                        
-                    }else{
-                        mergedata(json);
+                    try {
+                        var json = JSON.parse(data);
+                        if(Math.abs(timenow - json[0].unixtime)  > 30){
+                            
+                        }else{
+                            mergedata(json);
+                        }
+                    }catch(error){
+                        console.log(error.message);
                     }
+                    
                 }
                 
                 
