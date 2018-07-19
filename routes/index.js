@@ -8,6 +8,11 @@ function authen(req, res, next){
   if(auth != null && auth != ""){
     var key = auth.split('@')[0];
     var secret = auth.split('@')[1];
+    if(secret.length < 24){
+      var err = new Error('Invalid key or secret.');
+      err.status = 401;
+      return next(err);
+    }
     Device.findOne({_id : secret , key : key}).exec(function(err,result){
       if(err) throw err;
       else if(result == null){

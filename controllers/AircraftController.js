@@ -11,6 +11,7 @@ var request = require('request-promise');
 var backup = require('mongodb-backup');
 var fs = require('fs');
 var csvpath = '/home/adsb/domains/mongodump/csv';
+var CronJob = require('cron').CronJob;
 var router = express.Router();
 var AircraftController = {};
 
@@ -19,8 +20,6 @@ var AircraftController = {};
 var jsonData = [];
 var tempData = [];
 var aircraftData = [];
-var tmpaircraftData = [];
-
 var OlderCollection = {};
 function createNew(json) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD");
@@ -142,31 +141,34 @@ AircraftController.adsbData = function (msg) {
 }
 AircraftController.putdata = function (req, res) {
     var prev = new Date() / 1000;
-    console.log(prev)
+    // console.log(prev)
     var data = req.body.data;
     if (jsonData.length > 0) {
         tempData = jsonData;
     }
     
     jsonData = [];
+    var node_number = data[0]['node_number'];
+    var filename = "/home/adsb/domains/mongodump/json/aircraft_"+node_number+".json";
+    fs.writeFile(filename,JSON.stringify(data),function(err){
+        if (err) throw err;
+        console.log("write data to "+filename);
+    });
+    
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
-        aircraftData.push(data[i]);
-        // createNew(data[i]);
+        
+        
         if (data[i].flight == "" || data[i].flight == "????????") {
             console.log("skip flight name is null");
         }else{
             createAircraft(data[i], data[i]['node_number']);
         }
         
-        // Aircraft.insertMany(jsonData);
     }
-    if (aircraftData.length > 0 && parseInt(prev)+1 > aircraftData[0].unixtime) {
-        tmpaircraftData = aircraftData;
-        aircraftData = [];
-    }
+    
     var curr = new Date() / 1000;
-    console.log(curr)
+    // console.log(curr)
     console.log(parseFloat(curr) - parseFloat(prev));
     res.sendStatus(200);
 }
@@ -179,23 +181,48 @@ AircraftController.readJSON = function (req, res) {
         res.json(tempData);
     }
 }
-AircraftController.aircraftdata = function (req, res) {
-    var current_time = parseInt(new Date() / 1000);
-
-    // Aircraft.find({unixtime : {$gte : current_time-1}}).exec(function(err,result){
-    //     if(err) throw err;
-    //     res.json(result);
-    // });
-
-    if (aircraftData.length > 0) {
-        if(current_time > aircraftData[0].unixtime){
-            tmpaircraftData = aircraftData;
-            aircraftData = [];
-        }
-        res.json(tmpaircraftData);
-    } else {
-        res.json(tmpaircraftData);
+function mergedata(json){
+    var timenow = new Date() /1000;
+    if(aircraftData.length == 0){
+        aircraftData = json;
+    }else{
+        var isDuplicate = false;
+        json.forEach(jsondata => {
+            isDuplicate = false;
+            aircraftData.forEach(airdata => {
+                if(Math.abs(timenow - jsondata.unixtime)  > 30){
+                    isDuplicate = true
+                }
+                else if(airdata.lat==jsondata.lat && airdata.lon==jsondata.lon && airdata.altitude==jsondata.altitude && airdata.flight==jsondata.flight ){
+                    isDuplicate = true;
+                }
+            });
+            if(!isDuplicate){
+                aircraftData.push(jsondata);
+            }
+        });
     }
+}
+setInterval(function(){
+    aircraftData = [];
+    var timenow = new Date() /1000;
+    fs.readdir("/home/adsb/domains/mongodump/json",'utf8',function(err,files){
+        if(err) throw err;
+        files.forEach(element => {
+            fs.readFile("/home/adsb/domains/mongodump/json/"+element,function(err1,data){
+                var json = JSON.parse(data);
+                if(Math.abs(timenow - json[0].unixtime)  > 30){
+                    
+                }else{
+                    mergedata(json);
+                }
+                
+            });
+        });
+    })
+},1000);
+AircraftController.aircraftdata = function (req, res) {
+    res.json(aircraftData);
 }
 
 AircraftController.holodata = function (req, res) {
