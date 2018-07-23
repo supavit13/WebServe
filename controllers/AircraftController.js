@@ -246,7 +246,10 @@ AircraftController.holodata = function (req, res) {
     console.log("date : " + date.toString());
     console.log("before : " + before.toString());
     Aircraft.find({ unixtime: { $gte: before, $lte: date } }).sort({ unixtime: 1 }).exec(function (err, result) {
-
+        // console.log(result[0])
+        var qrytime = result[0].unixtime*1000;
+        qrytime = moment(qrytime).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
+        console.log(qrytime)
         var j = 0, i = 0, check = true;
         for (i = 0; i < result.length; i++) {
             j = 0;
@@ -260,15 +263,15 @@ AircraftController.holodata = function (req, res) {
             if (j == schema.length && check == true) {
                 schema.push({
                     flight: result[i].flight,
-                    first_time: result[i].date,
-                    lastest_time: result[i].date,
+                    first_time: moment(result[i].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss"),
+                    lastest_time: moment(result[i].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss"),
                     points: [
                         {
                             lat: result[i].lat,
                             lon: result[i].lon,
                             altitude: result[i].altitude,
                             speed: result[i].speed,
-                            time: result[i].date
+                            time: moment(result[i].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
                         }
                     ]
                 });
@@ -277,13 +280,13 @@ AircraftController.holodata = function (req, res) {
         for (var m = 0; m < schema.length; m++) {
             for (var n = 0; n < result.length; n++) {
                 if (schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date) {
-                    schema[m].lastest_time = result[n].date;
+                    schema[m].lastest_time = moment(result[n].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
                     schema[m].points.push({
                         lat: result[n].lat,
                         lon: result[n].lon,
                         altitude: result[n].altitude,
                         speed: result[n].speed,
-                        time: result[n].date
+                        time: moment(result[n].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
                     })
                 }
             }
@@ -305,7 +308,7 @@ AircraftController.holodata = function (req, res) {
                             lon: result1[n].lon,
                             altitude: result1[n].altitude,
                             speed: result1[n].speed,
-                            time: result1[n].date
+                            time: moment(result1[n].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
                         });
                     }
                 }
@@ -346,14 +349,14 @@ AircraftController.postholodata = function (req, res) {
                 schema.push({
                     flight: result[i].flight,
                     first_time: result[i].date,
-                    lastest_time: result[i].date,
+                    lastest_time: moment(result[i].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss"),
                     points: [
                         {
                             lat: result[i].lat,
                             lon: result[i].lon,
                             altitude: result[i].altitude,
                             speed: result[i].speed,
-                            time: result[i].date
+                            time: moment(result[i].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
                         }
                     ]
                 });
@@ -362,13 +365,13 @@ AircraftController.postholodata = function (req, res) {
         for (var m = 0; m < schema.length; m++) {
             for (var n = 0; n < result.length; n++) {
                 if (schema[m].flight == result[n].flight && schema[m].lastest_time != result[n].date) {
-                    schema[m].lastest_time = result[n].date;
+                    schema[m].lastest_time = moment(result[n].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
                     schema[m].points.push({
                         lat: result[n].lat,
                         lon: result[n].lon,
                         altitude: result[n].altitude,
                         speed: result[n].speed,
-                        time: result[n].date
+                        time: moment(result[n].unixtime*1000).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss")
                     })
                 }
             }

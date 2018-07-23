@@ -27,7 +27,7 @@ function puts(err,stdout,stderr){console.log(stdout) }
 mongoose.Promise = global.Promise;
 
 new CronJob('59 59 23 * * *', function() {
-  console.log('You will see this message every day');
+  console.log('Backup time');
   var date = new Date();
   var day = date.getDate().toString();
   var month = (date.getMonth()+1).toString();
@@ -36,7 +36,10 @@ new CronJob('59 59 23 * * *', function() {
   if(month.length == 1) month = '0'+month;
   var name = "backup"+day+month+year;
   exec("mongo backup.js",puts);
-  exec("mongoexport --sort '{ flight : 1 }' --host localhost --db adsb --collection aircrafts --csv --out /home/adsb/domains/mongodump/csv/"+name+".csv --fields date,unixtime,hex,flight,lat,lon,altitude,speed,track,node_number",puts);
+  exec("mongoexport --host localhost --db adsb --collection aircrafts --csv --out /home/adsb/domains/mongodump/csv/"+name+".csv --fields date,unixtime,hex,flight,lat,lon,altitude,speed,track,node_number",puts);
+  }, null, true, 'Asia/Bangkok');
+new CronJob('00 01 00 * * *', function() {
+  console.log('Remove time');
   request.get('http://127.0.0.1:8080/backup');
 }, null, true, 'Asia/Bangkok');
 
