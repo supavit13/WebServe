@@ -390,6 +390,8 @@ AircraftController.home = function (req, res) {
         if (err) console.log("Error:", err);
         else {
             Aircraft.aggregate([{ $group: { _id: {}, mindate: { $min: "$date" } } }]).exec(function (erro, date) {
+                if(erro) throw erro;
+                console.log(date);
                 if(date == null){
                     date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("MM/DD/YYYY 00:01");
                 }else{
