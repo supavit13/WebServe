@@ -101,7 +101,7 @@ function createAircraft(json, no) {
         date: date
     };
 
-    Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon, altitude : json.altitude }).exec(function (err, result) {
+    Aircraft.findOne({ flight: json.flight, lat: json.lat, lon: json.lon, altitude : json.altitude , seen : json.seen }).exec(function (err, result) {
         if (err) console.log("Error:", err);
         else if (result == null) {
             var newAircraft = new Aircraft(schema);
@@ -391,6 +391,9 @@ AircraftController.home = function (req, res) {
         else {
             Aircraft.aggregate([{ $group: { _id: {}, mindate: { $min: "$date" } } }]).exec(function (erro, date) {
                 date = moment(date[0].mindate).format("MM/DD/YYYY HH:mm");
+                if(date == null || date[0].mindate == null){
+                    date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("MM/DD/YYYY 00:01");
+                }
                 res.render('index', { title: 'ADS-B Data Center', node_number: result.length, date: date });
             })
 
