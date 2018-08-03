@@ -390,10 +390,12 @@ AircraftController.home = function (req, res) {
         if (err) console.log("Error:", err);
         else {
             Aircraft.aggregate([{ $group: { _id: {}, mindate: { $min: "$date" } } }]).exec(function (erro, date) {
-                date = moment(date[0].mindate).format("MM/DD/YYYY HH:mm");
                 if(date == null || date[0].mindate == null){
                     date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("MM/DD/YYYY 00:01");
+                }else{
+                    date = moment(date[0].mindate).format("MM/DD/YYYY HH:mm");
                 }
+                
                 res.render('index', { title: 'ADS-B Data Center', node_number: result.length, date: date });
             })
 
