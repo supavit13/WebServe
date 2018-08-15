@@ -131,37 +131,40 @@ function createAircraft(json, no) {
 }
 function nonFilterCreateAircraft(json, no) {
     var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
-    var str = json.flight;
-    // console.log(json);
-    json.flight = str.trim();
-    var schema = {
-        hex: json.hex,
-        squawk: json.squawk,
-        flight: json.flight,
-        lat: json.lat,
-        lon: json.lon,
-        nucp: json.nucp,
-        seen_pos: json.seen_pos,
-        altitude: json.altitude,
-        vert_rate: json.vert_rate,
-        track: json.track,
-        speed: json.speed,
-        category: json.category,
-        mlat: json.mlat,
-        tisb: json.tisb,
-        messages: json.messages,
-        seen: json.seen,
-        rssi: json.rssi,
-        node_number: no,
-        unixtime: json.unixtime,
-        date: date
-    };
-    var newAircraft = new Aircraft(schema);
-        jsonData.push(schema);
-        newAircraft.save(function (err) {
+    for(var i=0;i<json.length;i++){
+        
+        var str = json[i].flight;
+        // console.log(json);
+        json.flight = str.trim();
+        var schema = {
+            hex: json[i].hex,
+            squawk: json[i].squawk,
+            flight: json[i].flight,
+            lat: json[i].lat,
+            lon: json[i].lon,
+            nucp: json[i].nucp,
+            seen_pos: json[i].seen_pos,
+            altitude: json[i].altitude,
+            vert_rate: json[i].vert_rate,
+            track: json[i].track,
+            speed: json[i].speed,
+            category: json[i].category,
+            mlat: json[i].mlat,
+            tisb: json[i].tisb,
+            messages: json[i].messages,
+            seen: json[i].seen,
+            rssi: json[i].rssi,
+            node_number: no,
+            unixtime: json[i].unixtime,
+            date: date
+        };
+        json[i] = schema;
+    }
+    Aircraft.insertMany(json,function(err,docs){
         if (err) console.log("Error:", err);
-        else console.log("insert non filter " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
+        else console.log("insert non filter successful at " + date);
     });
+    
 
 }
 
@@ -191,18 +194,20 @@ AircraftController.putdata = function (req, res) {
     console.log("data size : ");
     console.log(data.length);
     console.log("============");
-    for (var i = 0; i < data.length; i++) {
-        console.log(data[i].unixtime);
-        nonFilterCreateAircraft(data[i], data[i]['node_number'])
+    console.log(data[0].unixtime);
+    nonFilterCreateAircraft(data, data[0]['node_number']);
+    // for (var i = 0; i < data.length; i++) {
+    //     console.log(data[i].unixtime);
         
-        // if (data[i].flight == "" || data[i].flight == "????????") {
-        //     console.log("skip flight name is null");
-        // }else{
+        
+    //     if (data[i].flight == "" || data[i].flight == "????????") {
+    //         console.log("skip flight name is null");
+    //     }else{
             
-        //     createAircraft(data[i], data[i]['node_number']);
-        // }
+    //         createAircraft(data[i], data[i]['node_number']);
+    //     }
         
-    }
+    // }
     
     var curr = new Date() / 1000;
     // console.log(curr)
