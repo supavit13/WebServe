@@ -135,7 +135,7 @@ function nonFilterCreateAircraft(json, no) {
         
         var str = json[i].flight;
         // console.log(json);
-        json.flight = str.trim();
+        json[i].flight = str.trim();
         var schema = {
             hex: json[i].hex,
             squawk: json[i].squawk,
