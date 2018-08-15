@@ -129,7 +129,41 @@ function createAircraft(json, no) {
     });
 
 }
+function nonFilterCreateAircraft(json, no) {
+    var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
+    var str = json.flight;
+    // console.log(json);
+    json.flight = str.trim();
+    var schema = {
+        hex: json.hex,
+        squawk: json.squawk,
+        flight: json.flight,
+        lat: json.lat,
+        lon: json.lon,
+        nucp: json.nucp,
+        seen_pos: json.seen_pos,
+        altitude: json.altitude,
+        vert_rate: json.vert_rate,
+        track: json.track,
+        speed: json.speed,
+        category: json.category,
+        mlat: json.mlat,
+        tisb: json.tisb,
+        messages: json.messages,
+        seen: json.seen,
+        rssi: json.rssi,
+        node_number: no,
+        unixtime: json.unixtime,
+        date: date
+    };
+    var newAircraft = new Aircraft(schema);
+        jsonData.push(schema);
+        newAircraft.save(function (err) {
+        if (err) console.log("Error:", err);
+        else console.log("insert non filter " + schema.flight + " " + schema.altitude + " aircraft successful at " + date);
+    });
 
+}
 
 
 AircraftController.adsbData = function (msg) {
@@ -154,16 +188,19 @@ AircraftController.putdata = function (req, res) {
         if (err) throw err;
         console.log("write data to "+filename);
     });
-    
+    console.log("data size : ");
+    console.log(data.length);
+    console.log("============");
     for (var i = 0; i < data.length; i++) {
         console.log(data[i].unixtime);
+        nonFilterCreateAircraft(data[i], data[i]['node_number'])
         
-        
-        if (data[i].flight == "" || data[i].flight == "????????") {
-            console.log("skip flight name is null");
-        }else{
-            createAircraft(data[i], data[i]['node_number']);
-        }
+        // if (data[i].flight == "" || data[i].flight == "????????") {
+        //     console.log("skip flight name is null");
+        // }else{
+            
+        //     createAircraft(data[i], data[i]['node_number']);
+        // }
         
     }
     
