@@ -14,6 +14,8 @@ var csvpath = '/home/adsb/domains/mongodump/csv';
 var CronJob = require('cron').CronJob;
 var router = express.Router();
 var AircraftController = {};
+var exec = require('child_process').exec;
+function puts(err,stdout,stderr){console.log(stdout) }
 
 
 
@@ -168,6 +170,65 @@ function nonFilterCreateAircraft(json, no) {
 
 }
 
+function filterAircraft(json, no) {
+    var date = moment(new Date(Date.now())).tz("Asia/Bangkok").format("YYYY-MM-DD HH:mm:ss");
+    
+    for(var i=0;i<json.length;i++){
+        
+        var str = json[i].flight;
+        // console.log(json);
+        json[i].flight = str.trim();
+        var schema = {
+            hex: json[i].hex,
+            squawk: json[i].squawk,
+            flight: json[i].flight,
+            lat: json[i].lat,
+            lon: json[i].lon,
+            nucp: json[i].nucp,
+            seen_pos: json[i].seen_pos,
+            altitude: json[i].altitude,
+            vert_rate: json[i].vert_rate,
+            track: json[i].track,
+            speed: json[i].speed,
+            category: json[i].category,
+            mlat: json[i].mlat,
+            tisb: json[i].tisb,
+            messages: json[i].messages,
+            seen: json[i].seen,
+            rssi: json[i].rssi,
+            node_number: no,
+            unixtime: json[i].unixtime,
+            date: date
+        };
+        json[i] = schema;
+    }
+    var thisTime = new Date() / 1000;
+    var qry = {
+       unixtime : { $gte : thisTime - 5 }
+    };
+    Aircraft.find(qry,function(err,docs){
+        var newdata = [];
+        if(err) throw err;
+        json.forEach(jsondata => {
+            docs.forEach(docdata => {
+                if(jsondata.unixtime < docdata.unixtime && jsondata.flight == docdata.flight && jsondata.lat == docdata.lat 
+                    && jsondata.lon == docdata.lon && jsondata.altitude == docdata.altitude && jsondata.seen == docdata.seen){
+                        Aircraft.findOne({ unixtime : docdata.unixtime, flight : docdata.flight, lat : docdata.lat , lon : docdata.lon , altitude : docdata.altitude , seen : docdata.seen }).update(jsondata);
+                        console.log("update data at " + docdata.flight);
+                }else if(jsondata.flight != docdata.flight && jsondata.lat != docdata.lat && jsondata.lon != docdata.lon 
+                    && jsondata.altitude != docdata.altitude && jsondata.seen != docdata.seen){
+                        newdata.push(jsondata);
+                }
+            });
+        });
+        Aircraft.insertMany(newdata,function(err,docs){
+            if (err) console.log("Error:", err);
+            else console.log("insert non filter successful at " + date);
+        });
+    });
+
+}
+
 
 AircraftController.adsbData = function (msg) {
     if (msg.flight.trim() != "" && msg.flight.trim() != "????????") {
@@ -195,7 +256,8 @@ AircraftController.putdata = function (req, res) {
     console.log(data.length);
     console.log("============");
     console.log(data[0].unixtime);
-    nonFilterCreateAircraft(data, data[0]['node_number']);
+    filterAircraft(data, data[0]['node_number']);
+    // nonFilterCreateAircraft(data, data[0]['node_number']);
     // for (var i = 0; i < data.length; i++) {
     //     console.log(data[i].unixtime);
         
@@ -555,6 +617,7 @@ AircraftController.backup = function (req, res) {
     Aircraft.remove({}).exec(function (err, result) {
         console.log("Aircrafts collection removed");
     });
+    exec("pm2 reload npm",puts);
     res.sendStatus(200);
 
 }
