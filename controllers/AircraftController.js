@@ -202,32 +202,62 @@ function filterAircraft(json, no) {
         };
         json[i] = schema;
     }
-    var thisTime = new Date() / 1000;
-    var qry = {
-       unixtime : { $gte : thisTime - 5 }
-    };
-    Aircraft.find(qry,function(err,docs){
-        var newdata = [];
-        if(err) throw err;
-        json.forEach(jsondata => {
-            docs.forEach(docdata => {
-                if(jsondata.unixtime < docdata.unixtime && jsondata.flight == docdata.flight && jsondata.lat == docdata.lat 
-                    && jsondata.lon == docdata.lon && jsondata.altitude == docdata.altitude && jsondata.seen == docdata.seen){
-                        Aircraft.findOne({ unixtime : docdata.unixtime, flight : docdata.flight, lat : docdata.lat , lon : docdata.lon , altitude : docdata.altitude , seen : docdata.seen }).update(jsondata);
-                        console.log("update data at " + docdata.flight);
-                }else if(jsondata.flight != docdata.flight && jsondata.lat != docdata.lat && jsondata.lon != docdata.lon 
-                    && jsondata.altitude != docdata.altitude && jsondata.seen != docdata.seen){
-                        newdata.push(jsondata);
-                }
-            });
-        });
-        console.log("filtered data : ");
-        console.log(newdata.length);
-        Aircraft.insertMany(newdata,function(err,docs){
+
+    json.forEach(docs =>{
+        Aircraft.findOne({ flight: docs.flight, lat: docs.lat, lon: docs.lon, altitude : docs.altitude , seen : docs.seen }).exec(function (err, result) {
             if (err) console.log("Error:", err);
-            else console.log("insert filter successful at " + date);
+            else if (result == null) {
+                var newAircraft = new Aircraft(docs);
+                jsonData.push(docs);
+                newAircraft.save(function (err) {
+                    if (err) console.log("Error:", err);
+                    else console.log("insert " + docs.flight + " " + docs.altitude + " aircraft successful at " + date);
+                });
+            } else {
+                var unixtimes = new Date() / 1000;
+                if (result.lat != docs.lat) {
+                    var newAircraft = new Aircraft(docs);
+                    jsonData.push(docs);
+                    newAircraft.save(function (err) {
+                        if (err) console.log("Error:", err);
+                        else console.log("insert " + docs.flight + " " + docs.altitude + " aircraft successful at " + date);
+                    });
+                } else if (result.unixtime > docs.unixtime && Math.abs(docs.unixtime - unixtimes) <= 5) { //find minimum time
+                    console.log("update to minimum");
+                    Aircraft.findOne({ flight: docs.flight, lat: docs.lat, lon: docs.lon }).update(docs);
+                    jsonData.push(docs);
+                    console.log("update " + docs.flight + " dbtime :" + result.unixtime.toString() + " adsb :" + docs.unixtime.toString() + " adsb - now :" + (docs.unixtime - unixtimes).toString());
+                }
+            }
         });
     });
+
+    // var thisTime = new Date() / 1000;
+    // var qry = {
+    //    unixtime : { $gte : thisTime - 5 }
+    // };
+    // Aircraft.find(qry,function(err,docs){
+    //     var newdata = [];
+    //     if(err) throw err;
+    //     json.forEach(jsondata => {
+    //         docs.forEach(docdata => {
+    //             if(jsondata.unixtime < docdata.unixtime && jsondata.flight == docdata.flight && jsondata.lat == docdata.lat 
+    //                 && jsondata.lon == docdata.lon && jsondata.altitude == docdata.altitude && jsondata.seen == docdata.seen){
+    //                     Aircraft.findOne({ unixtime : docdata.unixtime, flight : docdata.flight, lat : docdata.lat , lon : docdata.lon , altitude : docdata.altitude , seen : docdata.seen }).update(jsondata);
+    //                     console.log("update data at " + docdata.flight);
+    //             }else if(jsondata.flight != docdata.flight && jsondata.lat != docdata.lat && jsondata.lon != docdata.lon 
+    //                 && jsondata.altitude != docdata.altitude && jsondata.seen != docdata.seen){
+    //                     newdata.push(jsondata);
+    //             }
+    //         });
+    //     });
+    //     console.log("filtered data : ");
+    //     console.log(newdata.length);
+    //     Aircraft.insertMany(newdata,function(err,docs){
+    //         if (err) console.log("Error:", err);
+    //         else console.log("insert filter successful at " + date);
+    //     });
+    // });
 
 }
 
