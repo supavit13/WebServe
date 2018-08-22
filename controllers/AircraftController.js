@@ -288,8 +288,8 @@ AircraftController.putdata = function (req, res) {
     console.log(data.length);
     console.log("============");
     console.log(data[0].unixtime);
-    filterAircraft(data, data[0]['node_number']);
-    // nonFilterCreateAircraft(data, data[0]['node_number']);
+    // filterAircraft(data, data[0]['node_number']);
+    nonFilterCreateAircraft(data, data[0]['node_number']);
     // for (var i = 0; i < data.length; i++) {
     //     console.log(data[i].unixtime);
         
