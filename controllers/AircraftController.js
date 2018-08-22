@@ -221,9 +221,11 @@ function filterAircraft(json, no) {
                 }
             });
         });
+        console.log("filtered data : ");
+        console.log(newdata.length);
         Aircraft.insertMany(newdata,function(err,docs){
             if (err) console.log("Error:", err);
-            else console.log("insert non filter successful at " + date);
+            else console.log("insert filter successful at " + date);
         });
     });
 
