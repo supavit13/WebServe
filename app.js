@@ -26,7 +26,7 @@ function puts(err,stdout,stderr){console.log(stdout) }
 
 mongoose.Promise = global.Promise;
 
-new CronJob('59 59 23 * * *', function() {
+new CronJob('59 59 01 * * *', function() {
   console.log('Backup time');
   var date = new Date();
   var day = date.getDate().toString();
@@ -38,23 +38,14 @@ new CronJob('59 59 23 * * *', function() {
   exec("mongo backup.js",puts);
   exec("mongoexport --host localhost --db adsb --collection aircrafts --csv --out /home/adsb/domains/mongodump/csv/"+name+".csv --fields date,unixtime,hex,flight,lat,lon,altitude,speed,track,node_number",puts);
   }, null, true, 'Asia/Bangkok');
-new CronJob('00 01 00 * * *', function() {
+new CronJob('00 01 02 * * *', function() {
   console.log('Remove time');
   request.get('http://127.0.0.1:8080/backup');
 }, null, true, 'Asia/Bangkok');
 
 // mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware')
 
-const serverOptions = {
-  poolSize: 100,
-  socketOptions: {
-    socketTimeoutMS: 6000000
-  }
-};
-
-mongoose.connect('mongodb://127.0.0.1:27017/adsb',{
-  server : serverOptions
-})
+mongoose.connect('mongodb://127.0.0.1:27017/adsb')
   .then(() =>  console.log('connection succesful'))
   .catch((err) => {
     console.error(err) 
