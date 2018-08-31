@@ -45,13 +45,18 @@ new CronJob('00 01 02 * * *', function() {
 
 // mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware')
 
-mongoose.connect('mongodb://127.0.0.1:27017/adsb')
+mongoose.connect('mongodb://127.0.0.1:27017/adsb',{ server: { socketOptions: { connectTimeoutMS: 1000 }}})
   .then(() =>  console.log('connection succesful'))
   .catch((err) => {
-    console.error(err) 
-    exec("pm2 reload npm",puts);
+    mongoose.connect('mongodb://127.0.0.1:27017/adsb',{ server: { socketOptions: { connectTimeoutMS: 1000 }}});
+    console.error(err);
   });
-  var db = mongoose.connection;
+var db = mongoose.connection;
+db.on('disconnected',function(){
+  //reconnitec on timeout
+  mongoose.connect('mongodb://127.0.0.1:27017/adsb',{ server: { socketOptions: { connectTimeoutMS: 1000 }}});
+  db = mongoose.connection;
+});
 
 var app = express();
 
