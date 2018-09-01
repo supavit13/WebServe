@@ -649,7 +649,7 @@ AircraftController.backup = function (req, res) {
     Aircraft.remove({}).exec(function (err, result) {
         console.log("Aircrafts collection removed");
     });
-    exec("pm2 reload npm",puts);
+    //exec("pm2 reload npm",puts);
     res.sendStatus(200);
 
 }
