@@ -640,12 +640,12 @@ AircraftController.download = function (req, res) {
 AircraftController.backup = function (req, res) {
     var time = moment(new Date()).tz("Asia/Bangkok").format("YYYY-MM-DD");
 
-    backup({
+    /*backup({
         uri: 'mongodb://127.0.0.1:27017/adsb',
         root: '/home/adsb/domains/mongodump/dump' + time,
         collections: ['aircrafts'],
         parser: 'bson'
-    })
+    })*/
     Aircraft.remove({}).exec(function (err, result) {
         console.log("Aircrafts collection removed");
     });
