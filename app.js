@@ -40,10 +40,12 @@ new CronJob('59 59 01 * * *', function() {
   }, null, true, 'Asia/Bangkok');
 new CronJob('00 01 02 * * *', function() {
   console.log('Remove time');
-  request.get('http://127.0.0.1:8080/backup');
+  // request.get('http://127.0.0.1:8080/backup');
 }, null, true, 'Asia/Bangkok');
 
-// mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware')
+// mongoose.connect('mongodb://pi:raspberry1@ds163680.mlab.com:63680/piaware').
+
+
 
 mongoose.connect('mongodb://127.0.0.1:27017/adsb',{connectTimeoutMS : 1000 })
   .then(() =>  console.log('connection succesful'))
