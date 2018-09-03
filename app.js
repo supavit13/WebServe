@@ -36,7 +36,7 @@ new CronJob('59 59 01 * * *', function() {
   if(month.length == 1) month = '0'+month;
   var name = "backup"+day+month+year;
   exec("mongo backup.js",puts);
-  exec("mongoexport --host localhost --db adsb --collection aircrafts --csv --out /home/adsb/domains/mongodump/csv/"+name+".csv --fields date,unixtime,hex,flight,lat,lon,altitude,speed,track,node_number",puts);
+  // exec("mongoexport --host localhost --db adsb --collection aircrafts --csv --out /home/adsb/domains/mongodump/csv/"+name+".csv --fields date,unixtime,hex,flight,lat,lon,altitude,speed,track,node_number",puts);
   }, null, true, 'Asia/Bangkok');
 new CronJob('00 01 02 * * *', function() {
   console.log('Remove time');
